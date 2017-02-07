@@ -27,9 +27,8 @@ Thumbs.db
 
 # Android Studio
 *.iml
-.idea
-/.app/src/main/res/values/api_key.xml
-#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+/app/src/main/res/values/api_key.xml
+.idea/workspace.xml
 .gradle
 build/
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_action_bar"
+    android:layout_width="match_parent"
+    android:layout_height="@android:dimen/notification_large_icon_height"
+    android:background="@color/colorPrimary"
+    android:orientation="horizontal">
+
+
+    <AutoCompleteTextView
+        android:id="@+id/auto_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="7dp"
+        android:background="@color/background"
+        android:hint="Search for movie category"
+        android:maxLines="1"
+        android:lines="1"
+        android:paddingStart="43dp" />
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="match_parent"
+        android:layout_margin="12dp"
+        android:src="@drawable/search" />
+
+</RelativeLayout>

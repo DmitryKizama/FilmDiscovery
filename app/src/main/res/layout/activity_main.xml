@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sw_refresh_layout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activites.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <FrameLayout
+            android:id="@+id/frame_main"
+            android:layout_width="match_parent"
+            android:layout_height="@android:dimen/notification_large_icon_height" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/frame_main"
+            android:background="@color/background" />
+
+        <TextView
+            android:id="@+id/tv_no_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/frame_main"
+            android:alpha="0.4"
+            android:gravity="center"
+            android:paddingBottom="@android:dimen/notification_large_icon_height"
+            android:text="No internet connection"
+            android:textSize="44sp" />
+
+    </RelativeLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

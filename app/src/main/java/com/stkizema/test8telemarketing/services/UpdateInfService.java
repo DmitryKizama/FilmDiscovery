@@ -32,10 +32,7 @@ public class UpdateInfService extends android.app.Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("SERVICEPROBLMS", "on bind");
-        String ret = TopApp.getContext().getResources().getString(R.string.api_key);
-        Log.d("SERVICEPROBLMS", "api = " + ret);
-        API_KEY = ret;
+        API_KEY = TopApp.getContext().getResources().getString(R.string.api_key);
         return iBinder;
     }
 

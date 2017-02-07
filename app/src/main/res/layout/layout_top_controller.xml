@@ -2,26 +2,58 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_action_bar"
     android:layout_width="match_parent"
-    android:layout_height="@android:dimen/notification_large_icon_height"
+    android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:orientation="horizontal">
 
+    <ImageView
+        android:id="@+id/id_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="7dp"
+        android:layout_marginStart="7dp"
+        android:src="@drawable/ic_menu" />
+
+    <ImageView
+        android:id="@+id/id_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="7dp"
+        android:layout_marginStart="7dp"
+        android:src="@drawable/ic_keyboard_arrow_right" />
+
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
 
     <AutoCompleteTextView
         android:id="@+id/auto_tv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="7dp"
+        android:layout_marginBottom="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_toEndOf="@+id/id_menu"
+        android:layout_toStartOf="@id/id_next"
         android:background="@color/background"
         android:hint="Search for movie category"
-        android:maxLines="1"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
         android:lines="1"
-        android:paddingStart="43dp" />
+        android:paddingStart="50dp" />
 
     <ImageView
-        android:layout_width="35dp"
-        android:layout_height="match_parent"
-        android:layout_margin="12dp"
-        android:src="@drawable/search" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="7dp"
+        android:layout_toEndOf="@+id/id_menu"
+        android:alpha="0.6"
+        android:src="@drawable/ic_search" />
+
 
 </RelativeLayout>

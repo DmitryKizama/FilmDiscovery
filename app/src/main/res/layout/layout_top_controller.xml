@@ -25,26 +25,40 @@
         android:layout_marginStart="7dp"
         android:src="@drawable/ic_keyboard_arrow_right" />
 
-    <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
+   <!-- <LinearLayout
         android:layout_width="0px"
-        android:layout_height="0px"/>
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" /> -->
 
-    <AutoCompleteTextView
-        android:id="@+id/auto_tv"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="7dp"
         android:layout_marginTop="7dp"
         android:layout_toEndOf="@+id/id_menu"
         android:layout_toStartOf="@id/id_next"
-        android:background="@color/background"
-        android:hint="Search for movie category"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:lines="1"
-        android:paddingStart="50dp" />
+        android:background="@color/background">
+
+        <TextView
+            android:id="@+id/tv_hint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.75"
+            android:gravity="center" />
+
+        <AutoCompleteTextView
+            android:id="@+id/auto_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:lines="1"
+            android:paddingStart="50dp" />
+
+
+    </RelativeLayout>
+
 
     <ImageView
         android:layout_width="wrap_content"

@@ -14,9 +14,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyboardShortcutGroup;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,9 @@ import com.stkizema.test8telemarketing.adapters.RVAdapterMain;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.MovieDb;
 import com.stkizema.test8telemarketing.services.UpdateInfService;
+
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
 import java.util.List;
 
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiver;
     private TopMainController topMainController;
     private FrameLayout frameTopLayout;
+    private RelativeLayout rootLayout;
 
     private ServiceConnection upConnection = new ServiceConnection() {
         @Override
@@ -64,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("SERVICEPROBLMS", "on create");
+        rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         bindService(new Intent(this, UpdateInfService.class), upConnection, BIND_AUTO_CREATE);
         rvMain = (RecyclerView) findViewById(R.id.rv_main);
         rvAdapterMain = new RVAdapterMain(this, null);
@@ -135,6 +142,17 @@ public class MainActivity extends AppCompatActivity {
         frameTopLayout.removeAllViews();
         frameTopLayout.addView(view);
         topMainController = new TopMainController(frameTopLayout, this);
+
+        KeyboardVisibilityEvent.setEventListener(this, new KeyboardVisibilityEventListener() {
+            @Override
+            public void onVisibilityChanged(boolean isOpen) {
+                if (isOpen) {
+                    topMainController.keyboardOpen();
+                } else {
+                    topMainController.keyboardClose();
+                }
+            }
+        });
     }
 
     private void rvVisible(boolean rvVisible) {
@@ -151,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION_MOVIES);
         registerReceiver(broadcastReceiver, intFilt);
     }
+
 
     @Override
     protected void onStop() {

@@ -28,6 +28,7 @@ Thumbs.db
 # Android Studio
 *.iml
 /app/src/main/res/values/api_key.xml
+.idea
 .idea/workspace.xml
 /.idea/workspace.xml
 .gradle

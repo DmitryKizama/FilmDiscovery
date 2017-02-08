@@ -16,6 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.stkizema.test8telemarketing.R;
+import com.stkizema.test8telemarketing.db.MovieHelper;
+import com.stkizema.test8telemarketing.db.model.MovieDb;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TopMainController {
     public static String TAG = "TopMainControllerLog";
@@ -25,14 +30,9 @@ public class TopMainController {
     private TextView tvHint;
     private ImageView btnMenu, btnNextSearch;
     private boolean searchMovie = false;
-
-    private static final String[] COUNTRIES = new String[]{
-            "Belgium", "France", "Italy", "Germany", "Spain"
-    };
+    private List<MovieDb> listMovies;
 
     public void keyboardOpen() {
-//        tvHint.clearAnimation();
-//        tvHint.setVisibility(View.GONE);
     }
 
     public void keyboardClose() {
@@ -48,12 +48,26 @@ public class TopMainController {
     public TopMainController(View parent, final Context context) {
         this.parent = parent;
         this.context = context;
+        onCreate();
+    }
+
+    private void onCreate() {
         tv = (AutoCompleteTextView) parent.findViewById(R.id.auto_tv);
+
+        listMovies = MovieHelper.getListMovies();
+        List<String> list = new ArrayList<>();
+        for (MovieDb movie : listMovies) {
+            list.add(movie.getTitle());
+        }
+        tv.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, list));
+        tv.setFocusableInTouchMode(false);
+
         btnMenu = (ImageView) parent.findViewById(R.id.id_menu);
-        btnNextSearch = (ImageView) parent.findViewById(R.id.id_next);
+
         tvHint = (TextView) parent.findViewById(R.id.tv_hint);
         tvHint.setText("Search by category");
-        tv.setFocusableInTouchMode(false);
+
+        btnNextSearch = (ImageView) parent.findViewById(R.id.id_next);
         btnNextSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,8 +75,6 @@ public class TopMainController {
             }
         });
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, COUNTRIES);
-        tv.setAdapter(adapter);
         tv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {

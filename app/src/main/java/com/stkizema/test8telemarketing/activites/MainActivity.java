@@ -14,9 +14,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyboardShortcutGroup;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -27,7 +25,7 @@ import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.activites.controllers.TopMainController;
 import com.stkizema.test8telemarketing.adapters.RVAdapterMain;
 import com.stkizema.test8telemarketing.db.MovieHelper;
-import com.stkizema.test8telemarketing.db.model.MovieDb;
+import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.services.UpdateInfService;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
@@ -58,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
             updateInfService = ((UpdateInfService.LocalBinder) iBinder).getService();
             upBound = true;
             Log.d("SERVICEPROBLMS", "on service connected, make call");
-            updateInfService.makeCall();
+            updateInfService.makeCallForRatedMovies();
+            updateInfService.makeCallForCategores();
         }
 
         @Override
@@ -84,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
         rvVisible(true);
         broadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-                List<MovieDb> list = MovieHelper.getListMovies();
+                topMainController.setLists();
+                List<Movie> list = MovieHelper.getTopRatedListMovies();
                 rvVisible(true);
                 switch (intent.getIntExtra(UpdateInfService.ACTIONINSERVICE, 0)) {
                     case 200: //OK

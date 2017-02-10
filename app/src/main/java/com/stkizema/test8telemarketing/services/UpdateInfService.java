@@ -10,9 +10,15 @@ import android.util.Log;
 import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.TopApp;
 import com.stkizema.test8telemarketing.activites.MainActivity;
+import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
-import com.stkizema.test8telemarketing.model.Movie;
+import com.stkizema.test8telemarketing.db.model.Category;
+import com.stkizema.test8telemarketing.model.CategoryClient;
+import com.stkizema.test8telemarketing.model.CategoryResponse;
+import com.stkizema.test8telemarketing.model.MovieClient;
 import com.stkizema.test8telemarketing.model.MoviesResponse;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,7 +66,7 @@ public class UpdateInfService extends android.app.Service {
                             return;
                         }
                     }
-                    makeCall();
+                    makeCallForRatedMovies();
                 } catch (Exception e) {
 
                 }
@@ -69,9 +75,38 @@ public class UpdateInfService extends android.app.Service {
         t.start();
     }
 
-    public void makeCall() {
+    public void makeCallForCategores() {
         Log.d("SERVICEPROBLMS", "make call");
-        Call<MoviesResponse> call = TopApp.getApiClient().getFilms(API_KEY);
+        Call<CategoryResponse> call = TopApp.getApiClient().getCategoryFilms(API_KEY, "en-US");
+        call.enqueue(new Callback<CategoryResponse>() {
+            @Override
+            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
+                if (response.body() == null) {
+                    Log.d("SERVICEPROBLMS", "null body");
+                    return;
+                }
+                for (CategoryClient item : response.body().getGenres()) {
+                    CategoryHelper.create(item.getName(), item.getId());
+
+                }
+                List<Category> list = CategoryHelper.getAllCategory();
+                int i = 0;
+                for (Category c : list) {
+                    Log.d("SERVICEPROBLMS", "Category number " + i + ") =  " + c.getName());
+                    i++;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryResponse> call, Throwable t) {
+                Log.d("SERVICEPROBLMS", "fail");
+            }
+        });
+    }
+
+    public void makeCallForRatedMovies() {
+        Log.d("SERVICEPROBLMS", "make call");
+        Call<MoviesResponse> call = TopApp.getApiClient().getTopRatedFilms(API_KEY);
         call.enqueue(new Callback<MoviesResponse>() {
             @Override
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
@@ -79,7 +114,7 @@ public class UpdateInfService extends android.app.Service {
                     Log.d("SERVICEPROBLMS", "null body");
                     return;
                 }
-                for (Movie item : response.body().getListMovies()) {
+                for (MovieClient item : response.body().getListMovies()) {
                     MovieHelper.create(item.getPosterPath(), item.isAdult(), item.getOverview(), item.getReleaseDate(), item.getId(), item.getOriginalTitle(), item.getOriginalLanguage(),
                             item.getTitle(), item.getBackdropPath(), item.getPopularity(), item.getVoteCount(), item.getVideo(), item.getVoteAverage());
                 }
@@ -87,7 +122,7 @@ public class UpdateInfService extends android.app.Service {
                 Intent intent = new Intent(MainActivity.BROADCAST_ACTION_MOVIES);
                 intent.putExtra(ACTIONINSERVICE, 200);
                 sendBroadcast(intent);
-//                List<MovieDb> listMovies = response.body().getListMovies();
+//                List<Movie> listMovies = response.body().getTopRatedListMovies();
 //                rvAdapterMain.setList(listMovies);
 //                swipeRefreshLayout.setRefreshing(false);
 

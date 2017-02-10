@@ -16,8 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.stkizema.test8telemarketing.R;
+import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
-import com.stkizema.test8telemarketing.db.model.MovieDb;
+import com.stkizema.test8telemarketing.db.model.Category;
+import com.stkizema.test8telemarketing.db.model.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,13 @@ public class TopMainController {
     private TextView tvHint;
     private ImageView btnMenu, btnNextSearch;
     private boolean searchMovie = false;
-    private List<MovieDb> listMovies;
+    private ArrayAdapter<String> adapter;
+
+    public TopMainController(View parent, final Context context) {
+        this.parent = parent;
+        this.context = context;
+        onCreate();
+    }
 
     public void keyboardOpen() {
     }
@@ -45,21 +53,35 @@ public class TopMainController {
         tv.setFocusableInTouchMode(false);
     }
 
-    public TopMainController(View parent, final Context context) {
-        this.parent = parent;
-        this.context = context;
-        onCreate();
+    public void setLists() {
+
+        List<Movie> listMov = MovieHelper.getTopRatedListMovies();
+        List<Category> listCat = CategoryHelper.getAllCategory();
+        if (listMov == null || listCat == null) {
+            Log.d("SERVICEPROBLMS", "list movies null ot list categories null");
+            return;
+        }
+        List<String> listMovies = new ArrayList<>();
+        for (Movie movie : listMov) {
+            listMovies.add(movie.getTitle());
+        }
+        List<String> listCategories = new ArrayList<>();
+        for (Category cat : listCat) {
+            listCategories.add(cat.getName());
+        }
+        adapter.clear();
+        if (searchMovie) {
+            adapter.addAll(listMovies);
+        } else {
+            adapter.addAll(listCategories);
+        }
+
     }
 
     private void onCreate() {
         tv = (AutoCompleteTextView) parent.findViewById(R.id.auto_tv);
-
-        listMovies = MovieHelper.getListMovies();
-        List<String> list = new ArrayList<>();
-        for (MovieDb movie : listMovies) {
-            list.add(movie.getTitle());
-        }
-        tv.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, list));
+        adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line);
+        tv.setAdapter(adapter);
         tv.setFocusableInTouchMode(false);
 
         btnMenu = (ImageView) parent.findViewById(R.id.id_menu);
@@ -79,6 +101,9 @@ public class TopMainController {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 tv.setFocusableInTouchMode(true);
+                if (!searchMovie) {
+                    tv.showDropDown();
+                }
                 return false;
             }
         });
@@ -91,6 +116,7 @@ public class TopMainController {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                setLists();
                 tvHint.clearAnimation();
                 if (tv.getText().toString().length() > 0) {
                     tvHint.setVisibility(View.GONE);

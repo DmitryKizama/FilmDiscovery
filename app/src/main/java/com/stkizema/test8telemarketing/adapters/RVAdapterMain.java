@@ -9,21 +9,21 @@ import android.view.ViewGroup;
 
 import com.koushikdutta.ion.Ion;
 import com.stkizema.test8telemarketing.R;
-import com.stkizema.test8telemarketing.db.model.MovieDb;
+import com.stkizema.test8telemarketing.db.model.Movie;
 
 import java.util.List;
 
 public class RVAdapterMain extends RecyclerView.Adapter<ViewHolderMain> {
 
-    private List<MovieDb> list;
+    private List<Movie> list;
     private Context con;
 
-    public RVAdapterMain(Context con, List<MovieDb> list) {
+    public RVAdapterMain(Context con, List<Movie> list) {
         this.list = list;
         this.con = con;
     }
 
-    public void setList(List<MovieDb> list) {
+    public void setList(List<Movie> list) {
         Log.d("SERVICEPROBLMS", "set list = " + list.size());
         this.list = list;
         notifyDataSetChanged();

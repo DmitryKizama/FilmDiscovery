@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.stkizema.test8telemarketing.api.FilmApiInterface;
+import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.DaoMaster;
 import com.stkizema.test8telemarketing.db.model.DaoSession;
@@ -30,6 +31,7 @@ public class TopApp extends Application {
         Database db = helper.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
         MovieHelper.getInstance(this);
+        CategoryHelper.getInstance(this);
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(API_BASE_URL)

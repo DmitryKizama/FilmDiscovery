@@ -13,7 +13,7 @@ import org.greenrobot.greendao.annotation.Generated;
         indexes = {
                 @Index(value = "idMovie", unique = true)
         })
-public class MovieDb {
+public class Movie {
     @Id
     private Long idMovie;
 
@@ -69,9 +69,9 @@ public class MovieDb {
     @Property(nameInDb = "voteAverage")
     private Double voteAverage;
 
-    public MovieDb(String posterPath, boolean adult, String overview, String releaseDate, Integer id,
-                   String originalTitle, String originalLanguage, String title, String backdropPath, Double popularity,
-                   Integer voteCount, Boolean video, Double voteAverage) {
+    public Movie(String posterPath, boolean adult, String overview, String releaseDate, Integer id,
+                 String originalTitle, String originalLanguage, String title, String backdropPath, Double popularity,
+                 Integer voteCount, Boolean video, Double voteAverage) {
         this.posterPath = posterPath;
         this.adult = adult;
         this.overview = overview;
@@ -87,8 +87,8 @@ public class MovieDb {
         this.voteAverage = voteAverage;
     }
 
-    @Generated(hash = 967079244)
-    public MovieDb(Long idMovie, @NotNull String posterPath, boolean adult, @NotNull String overview, @NotNull String releaseDate,
+    @Generated(hash = 2055581610)
+    public Movie(Long idMovie, @NotNull String posterPath, boolean adult, @NotNull String overview, @NotNull String releaseDate,
             @NotNull Integer id, @NotNull String originalTitle, @NotNull String originalLanguage, @NotNull String title,
             @NotNull String backdropPath, @NotNull Double popularity, @NotNull Integer voteCount, @NotNull Boolean video,
             @NotNull Double voteAverage) {
@@ -108,8 +108,8 @@ public class MovieDb {
         this.voteAverage = voteAverage;
     }
 
-    @Generated(hash = 1190811592)
-    public MovieDb() {
+    @Generated(hash = 1263461133)
+    public Movie() {
     }
 
     public String getPosterPath() {

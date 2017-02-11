@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.activites.controllers.TopMainController;
-import com.stkizema.test8telemarketing.adapters.RVAdapterMain;
+import com.stkizema.test8telemarketing.adapters.AdapterMainMovies;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.services.UpdateInfService;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private UpdateInfService updateInfService;
     private RecyclerView rvMain;
     private TextView tvNoItems;
-    private RVAdapterMain rvAdapterMain;
+    private AdapterMainMovies adapterMainMovies;
     private SwipeRefreshLayout swipeRefreshLayout;
     private BroadcastReceiver broadcastReceiver;
     private TopMainController topMainController;
@@ -80,28 +80,28 @@ public class MainActivity extends AppCompatActivity {
 
         rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         rvMain = (RecyclerView) findViewById(R.id.rv_main);
-        rvAdapterMain = new RVAdapterMain(this, null);
+        adapterMainMovies = new AdapterMainMovies(this, null);
         rvMain.setHasFixedSize(true);
-        rvMain.setAdapter(rvAdapterMain);
+        rvMain.setAdapter(adapterMainMovies);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
         rvMain.setLayoutManager(gridLayoutManager);
 
         tvNoItems = (TextView) findViewById(R.id.tv_no_items);
         rvVisible(true);
         List<Movie> list = MovieHelper.getTopRatedListMovies();
-        rvAdapterMain.setList(list);
+        adapterMainMovies.setList(list);
 
         broadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 onReceivedMovieBroadcast(intent);
             }
         };
-        registerBroadcast();
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.sw_refresh_layout_main);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Logger.logd("Refresh", "on refresh called");
                 if (updateInfService != null) {
                     updateInfService.fetchMovies();
                 }
@@ -141,9 +141,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        registerBroadcast();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         if (updateInfService != null) {
             unbindService(upConnection);
             updateInfService = null;
@@ -158,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             case 200: //OK
                 Logger.logd("NETWORK", "Good");
                 swipeRefreshLayout.setRefreshing(false);
-                rvAdapterMain.setList(list);
+                adapterMainMovies.setList(list);
                 break;
             case 400: //NO NETWORK
                 Toast.makeText(MainActivity.this, "No network", Toast.LENGTH_SHORT).show();
@@ -171,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                     rvVisible(false);
                     return;
                 }
-                rvAdapterMain.setList(list);
+                adapterMainMovies.setList(list);
                 break;
             case 0: // ERROR
                 Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();

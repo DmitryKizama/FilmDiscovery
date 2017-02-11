@@ -13,12 +13,12 @@ import com.stkizema.test8telemarketing.db.model.Movie;
 
 import java.util.List;
 
-public class RVAdapterMain extends RecyclerView.Adapter<ViewHolderMain> {
+public class AdapterMainMovies extends RecyclerView.Adapter<ViewHolderMain> {
 
     private List<Movie> list;
     private Context con;
 
-    public RVAdapterMain(Context con, List<Movie> list) {
+    public AdapterMainMovies(Context con, List<Movie> list) {
         this.list = list;
         this.con = con;
     }

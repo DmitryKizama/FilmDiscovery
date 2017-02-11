@@ -25,69 +25,89 @@
                 android:layout_weight="2"
                 android:orientation="vertical">
 
-                <LinearLayout
+
+                <ImageView
+                    android:id="@+id/img_title"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="5">
+                    android:layout_height="match_parent"
+                    android:scaleType="fitStart" />
 
-                    <ImageView
-                        android:id="@+id/img_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="fitStart" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Title" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:orientation="vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp">
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:gravity="center|top"
+
+                        android:text="Title" />
 
                     <TextView
                         android:id="@+id/vote"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:gravity="end|center|bottom"
+                        android:gravity="end|top"
                         android:paddingStart="8dp"
-                        android:textSize="16sp"
-                        android:text="vote_count" />
+                        android:text="vote_count"
+                        android:textSize="16sp" />
 
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:layout_gravity="bottom"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="2dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/star" />
 
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/popularity"
+                    android:id="@+id/tv_release_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="end"
+                    android:text="release date" />
+
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:maxLines="4"
+                    android:text="tv_description" />
+
+                <!--<TextView
+                    android:id="@+id/tv_original_title"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:gravity="center|top"
-                    android:text="popularity" />
+                    android:text="title" />
+
+                <TextView
+                    android:id="@+id/tv_popularity"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="popularity" /> -->
 
             </LinearLayout>
 

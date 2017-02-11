@@ -2,7 +2,6 @@ package com.stkizema.test8telemarketing.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,16 +36,18 @@ public class AdapterMainMovies extends RecyclerView.Adapter<ViewHolderMain> {
     @Override
     public void onBindViewHolder(ViewHolderMain holder, int position) {
 //        holder.getAdapterPosition();
+        Movie movie = list.get(position);
         Ion.with(con)
-                .load("https://image.tmdb.org/t/p/w500" + list.get(position).getPosterPath())
+                .load("https://image.tmdb.org/t/p/w500" + movie.getPosterPath())
                 .withBitmap()
                 .placeholder(R.drawable.defaultimg)
                 .error(R.drawable.defaultimg)
                 .intoImageView(holder.imgMovie);
-
-        holder.tvTitle.setText(list.get(position).getTitle());
-        holder.tvVotes.setText(list.get(position).getVoteAverage().toString());
-        holder.tvPopularity.setText("Votes:" + "\n" + list.get(position).getVoteCount());
+//        holder.tvOriginalTitle.setText("Original title: " + list.get(position).getOriginalTitle());
+        holder.tvTitle.setText(movie.getTitle());
+        holder.tvVotes.setText(movie.getVoteAverage() + "");
+        holder.tvReleaseDate.setText(movie.getReleaseDate());
+        holder.tvDescription.setText(movie.getOverview());
     }
 
     @Override

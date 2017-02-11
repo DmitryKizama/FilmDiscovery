@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         adapterMainMovies = new AdapterMainMovies(this, null);
         rvMain.setHasFixedSize(true);
         rvMain.setAdapter(adapterMainMovies);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1, LinearLayoutManager.VERTICAL, false);
         rvMain.setLayoutManager(gridLayoutManager);
 
         tvNoItems = (TextView) findViewById(R.id.tv_no_items);

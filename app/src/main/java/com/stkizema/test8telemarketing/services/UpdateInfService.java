@@ -13,6 +13,7 @@ import com.stkizema.test8telemarketing.activites.MainActivity;
 import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.Category;
+import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.model.CategoryClient;
 import com.stkizema.test8telemarketing.model.CategoryResponse;
 import com.stkizema.test8telemarketing.model.MovieClient;
@@ -26,9 +27,10 @@ import retrofit2.Response;
 
 public class UpdateInfService extends android.app.Service {
 
-    private final IBinder iBinder = new LocalBinder();
-    private static String API_KEY;
+    private static final String API_KEY = TopApp.getContext().getResources().getString(R.string.api_key);
     public static final String ACTIONINSERVICE = "ACTIONINSERVICE";
+
+    private final IBinder iBinder = new LocalBinder();
 
     public class LocalBinder extends Binder {
         public UpdateInfService getService() {
@@ -38,44 +40,10 @@ public class UpdateInfService extends android.app.Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        API_KEY = TopApp.getContext().getResources().getString(R.string.api_key);
         return iBinder;
     }
 
-    public void refresh() {
-        waitForWifi();
-    }
-
-    private void waitForWifi() {
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        final NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    int i = 0;
-                    while (!wifi.isConnected()) {
-                        Thread.sleep(500);
-                        i++;
-                        if (i == 10) {
-                            //Connection ERROR!
-                            Intent intent = new Intent(MainActivity.BROADCAST_ACTION_MOVIES);
-                            intent.putExtra(ACTIONINSERVICE, 408);
-                            sendBroadcast(intent);
-                            return;
-                        }
-                    }
-                    makeCallForRatedMovies();
-                } catch (Exception e) {
-
-                }
-            }
-        };
-        t.start();
-    }
-
-    public void makeCallForCategores() {
+    public void fetchCategories() {
         Log.d("SERVICEPROBLMS", "make call");
         Call<CategoryResponse> call = TopApp.getApiClient().getCategoryFilms(API_KEY, "en-US");
         call.enqueue(new Callback<CategoryResponse>() {
@@ -104,7 +72,7 @@ public class UpdateInfService extends android.app.Service {
         });
     }
 
-    public void makeCallForRatedMovies() {
+    public void fetchMovies() {
         Log.d("SERVICEPROBLMS", "make call");
         Call<MoviesResponse> call = TopApp.getApiClient().getTopRatedFilms(API_KEY);
         call.enqueue(new Callback<MoviesResponse>() {
@@ -122,10 +90,6 @@ public class UpdateInfService extends android.app.Service {
                 Intent intent = new Intent(MainActivity.BROADCAST_ACTION_MOVIES);
                 intent.putExtra(ACTIONINSERVICE, 200);
                 sendBroadcast(intent);
-//                List<Movie> listMovies = response.body().getTopRatedListMovies();
-//                rvAdapterMain.setList(listMovies);
-//                swipeRefreshLayout.setRefreshing(false);
-
             }
 
             @Override

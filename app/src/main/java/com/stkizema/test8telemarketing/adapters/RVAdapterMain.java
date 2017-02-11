@@ -24,7 +24,6 @@ public class RVAdapterMain extends RecyclerView.Adapter<ViewHolderMain> {
     }
 
     public void setList(List<Movie> list) {
-        Log.d("SERVICEPROBLMS", "set list = " + list.size());
         this.list = list;
         notifyDataSetChanged();
     }

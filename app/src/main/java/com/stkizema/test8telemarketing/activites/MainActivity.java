@@ -27,6 +27,7 @@ import com.stkizema.test8telemarketing.adapters.RVAdapterMain;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.services.UpdateInfService;
+import com.stkizema.test8telemarketing.util.Logger;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
@@ -37,10 +38,10 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class MainActivity extends AppCompatActivity {
+
     public static final String BROADCAST_ACTION_MOVIES = "BROADCASTACTION";
 
     private UpdateInfService updateInfService;
-    private boolean upBound = false;
     private RecyclerView rvMain;
     private TextView tvNoItems;
     private RVAdapterMain rvAdapterMain;
@@ -50,27 +51,33 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout frameTopLayout;
     private RelativeLayout rootLayout;
 
+    private Bundle savedInstanceState;
+
     private ServiceConnection upConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             updateInfService = ((UpdateInfService.LocalBinder) iBinder).getService();
-            upBound = true;
+
             Log.d("SERVICEPROBLMS", "on service connected, make call");
-            updateInfService.makeCallForRatedMovies();
-            updateInfService.makeCallForCategores();
+            if (savedInstanceState == null) {
+                updateInfService.fetchMovies();
+                updateInfService.fetchCategories();
+            }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            upBound = false;
+            updateInfService = null;
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.savedInstanceState = savedInstanceState;
         setContentView(R.layout.activity_main);
         bindService(new Intent(this, UpdateInfService.class), upConnection, BIND_AUTO_CREATE);
+
         rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         rvMain = (RecyclerView) findViewById(R.id.rv_main);
         rvAdapterMain = new RVAdapterMain(this, null);
@@ -81,58 +88,22 @@ public class MainActivity extends AppCompatActivity {
 
         tvNoItems = (TextView) findViewById(R.id.tv_no_items);
         rvVisible(true);
+        List<Movie> list = MovieHelper.getTopRatedListMovies();
+        rvAdapterMain.setList(list);
+
         broadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-                List<Movie> list = MovieHelper.getTopRatedListMovies();
-                rvVisible(true);
-                switch (intent.getIntExtra(UpdateInfService.ACTIONINSERVICE, 0)) {
-                    case 200: //OK
-                        Toast.makeText(MainActivity.this, "Good!", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                        rvAdapterMain.setList(list);
-                        break;
-                    case 408: //REQUEST TIMEOUT
-                        Toast.makeText(MainActivity.this, "Request Timeout", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                        if (list == null) {
-                            rvVisible(false);
-                            return;
-                        }
-                        if (list.isEmpty()) {
-                            rvVisible(false);
-                            return;
-                        }
-                        rvAdapterMain.setList(list);
-                        break;
-                    case 400: //NO NETWORK
-                        Toast.makeText(MainActivity.this, "No network", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                        if (list == null) {
-                            rvVisible(false);
-                            return;
-                        }
-                        if (list.isEmpty()) {
-                            rvVisible(false);
-                            return;
-                        }
-                        rvAdapterMain.setList(list);
-                        break;
-                    case 0: // ERROR
-                        Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                        break;
-                }
+                onReceivedMovieBroadcast(intent);
             }
         };
         registerBroadcast();
-
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.sw_refresh_layout_main);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (upBound) {
-                    updateInfService.refresh();
+                if (updateInfService != null) {
+                    updateInfService.fetchMovies();
                 }
             }
         });
@@ -169,14 +140,43 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(broadcastReceiver, intFilt);
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(broadcastReceiver);
-        if (upBound) {
+        if (updateInfService != null) {
             unbindService(upConnection);
-            upBound = false;
+            updateInfService = null;
+        }
+    }
+
+    private void onReceivedMovieBroadcast(Intent intent){
+        List<Movie> list = MovieHelper.getTopRatedListMovies();
+        rvVisible(true);
+
+        switch (intent.getIntExtra(UpdateInfService.ACTIONINSERVICE, 0)) {
+            case 200: //OK
+                Logger.logd("NETWORK", "Good");
+                swipeRefreshLayout.setRefreshing(false);
+                rvAdapterMain.setList(list);
+                break;
+            case 400: //NO NETWORK
+                Toast.makeText(MainActivity.this, "No network", Toast.LENGTH_SHORT).show();
+                swipeRefreshLayout.setRefreshing(false);
+                if (list == null) {
+                    rvVisible(false);
+                    return;
+                }
+                if (list.isEmpty()) {
+                    rvVisible(false);
+                    return;
+                }
+                rvAdapterMain.setList(list);
+                break;
+            case 0: // ERROR
+                Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+                swipeRefreshLayout.setRefreshing(false);
+                break;
         }
     }
 }

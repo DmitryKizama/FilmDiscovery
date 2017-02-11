@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         bindService(new Intent(this, UpdateInfService.class), upConnection, BIND_AUTO_CREATE);
+        rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         rvMain = (RecyclerView) findViewById(R.id.rv_main);
         rvAdapterMain = new RVAdapterMain(this, null);
         rvMain.setHasFixedSize(true);
@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         rvVisible(true);
         broadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-                topMainController.setLists();
                 List<Movie> list = MovieHelper.getTopRatedListMovies();
                 rvVisible(true);
                 switch (intent.getIntExtra(UpdateInfService.ACTIONINSERVICE, 0)) {

@@ -53,7 +53,7 @@ public class TopMainController {
         tv.setFocusableInTouchMode(false);
     }
 
-    public void setLists() {
+    private void setLists(boolean smovie) {
 
         List<Movie> listMov = MovieHelper.getTopRatedListMovies();
         List<Category> listCat = CategoryHelper.getAllCategory();
@@ -70,7 +70,7 @@ public class TopMainController {
             listCategories.add(cat.getName());
         }
         adapter.clear();
-        if (searchMovie) {
+        if (smovie) {
             adapter.addAll(listMovies);
         } else {
             adapter.addAll(listCategories);
@@ -90,6 +90,8 @@ public class TopMainController {
         tvHint.setText("Search by category");
 
         btnNextSearch = (ImageView) parent.findViewById(R.id.id_next);
+        setLists(false);
+
         btnNextSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,6 +105,7 @@ public class TopMainController {
                 tv.setFocusableInTouchMode(true);
                 if (!searchMovie) {
                     tv.showDropDown();
+
                 }
                 return false;
             }
@@ -111,18 +114,17 @@ public class TopMainController {
         tv.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                setLists();
                 tvHint.clearAnimation();
                 if (tv.getText().toString().length() > 0) {
                     tvHint.setVisibility(View.GONE);
                 } else {
                     tvHint.setVisibility(View.VISIBLE);
                 }
+
             }
 
             @Override
@@ -147,6 +149,7 @@ public class TopMainController {
         if (!tv.getText().toString().equals("")) {
             return;
         }
+        setLists(!searchMovie);
         Animation animation_right = AnimationUtils.loadAnimation(context, R.anim.move_right);
         final Animation animation_left = AnimationUtils.loadAnimation(context, R.anim.move_left);
         tvHint.startAnimation(animation_right);

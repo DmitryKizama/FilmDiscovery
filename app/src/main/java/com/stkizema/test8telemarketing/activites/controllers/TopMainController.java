@@ -31,7 +31,7 @@ public class TopMainController {
     private View parent;
     private Context context;
     private AutoCompleteTextView tvAutocomplete;
-    private ImageView btnMenu, btnNextSearch;
+    private ImageView btnMenu, btnNextSearch, btnDelete;
     private boolean searchMovie = false;
     private ArrayAdapter<String> adapter;
 
@@ -44,7 +44,8 @@ public class TopMainController {
         onCreate();
     }
 
-    public void keyboardOpen() {}
+    public void keyboardOpen() {
+    }
 
     public void keyboardClose() {
         tvAutocomplete.setFocusable(false);
@@ -82,19 +83,27 @@ public class TopMainController {
 
     private void onCreate() {
         tvAutocomplete = (AutoCompleteTextView) parent.findViewById(R.id.auto_tv);
+        btnDelete = (ImageView) parent.findViewById(R.id.id_delete);
+        btnMenu = (ImageView) parent.findViewById(R.id.id_menu);
+        btnNextSearch = (ImageView) parent.findViewById(R.id.id_next);
+        TextView tvHint = (TextView) parent.findViewById(R.id.tv_hint);
+
         adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line);
         tvAutocomplete.setAdapter(adapter);
         tvAutocomplete.setFocusableInTouchMode(false);
 
-        btnMenu = (ImageView) parent.findViewById(R.id.id_menu);
-
-        TextView tvHint = (TextView) parent.findViewById(R.id.tv_hint);
         hintHelper = new HintHelper(tvHint);
 
-
-        btnNextSearch = (ImageView) parent.findViewById(R.id.id_next);
         setContent(false);
+        btnNextVisibility(true);
 
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvAutocomplete.setText("");
+                btnNextVisibility(true);
+            }
+        });
         btnNextSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,15 +125,18 @@ public class TopMainController {
 
         tvAutocomplete.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 hintHelper.setHintVisibility(tvAutocomplete.getText().toString().length() > 0);
+                btnNextVisibility(!(tvAutocomplete.getText().toString().length() > 0));
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void afterTextChanged(Editable editable) {
+            }
         });
 
         tvAutocomplete.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -140,6 +152,16 @@ public class TopMainController {
         });
     }
 
+    private void btnNextVisibility(boolean isBtnNextVisible) {
+        if (isBtnNextVisible) {
+            btnDelete.setVisibility(View.GONE);
+            btnNextSearch.setVisibility(View.VISIBLE);
+        } else {
+            btnDelete.setVisibility(View.VISIBLE);
+            btnNextSearch.setVisibility(View.GONE);
+        }
+    }
+
     private void animateTextView() {
         if (!tvAutocomplete.getText().toString().equals("")) {
             return;
@@ -152,13 +174,13 @@ public class TopMainController {
     }
 
 
-    private class HintHelper{
+    private class HintHelper {
         private TextView tvHint;
 
         private Animation animation_left;
         private Animation animation_right;
 
-        public HintHelper(TextView tvHint){
+        public HintHelper(TextView tvHint) {
             this.tvHint = tvHint;
 
             tvHint.setText("Search by category");
@@ -166,7 +188,7 @@ public class TopMainController {
             animation_left = AnimationUtils.loadAnimation(context, R.anim.move_left);
         }
 
-        private void setHintVisibility(boolean isTvEmpty){
+        private void setHintVisibility(boolean isTvEmpty) {
             tvHint.clearAnimation();
 
             if (isTvEmpty) {
@@ -176,11 +198,12 @@ public class TopMainController {
             }
         }
 
-        public void runHintAnimation(){
+        public void runHintAnimation() {
             tvHint.startAnimation(animation_right);
             animation_right.setAnimationListener(new Animation.AnimationListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {}
+                public void onAnimationStart(Animation animation) {
+                }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {

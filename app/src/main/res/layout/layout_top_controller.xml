@@ -15,15 +15,36 @@
         android:layout_marginStart="7dp"
         android:src="@drawable/ic_menu" />
 
-    <ImageView
-        android:id="@+id/id_next"
+    <LinearLayout
+        android:id="@+id/ll_delete_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="7dp"
         android:layout_marginStart="7dp"
-        android:src="@drawable/ic_keyboard_arrow_right" />
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/id_next"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="7dp"
+            android:layout_marginStart="7dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_keyboard_arrow_right" />
+
+        <ImageView
+            android:id="@+id/id_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="7dp"
+            android:layout_marginStart="7dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_delete" />
+
+    </LinearLayout>
+
 
     <!-- <LinearLayout
          android:layout_width="0px"
@@ -37,7 +58,7 @@
         android:layout_marginBottom="7dp"
         android:layout_marginTop="7dp"
         android:layout_toEndOf="@+id/id_menu"
-        android:layout_toStartOf="@id/id_next"
+        android:layout_toStartOf="@id/ll_delete_next"
         android:background="@color/background">
 
         <TextView

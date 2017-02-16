@@ -31,6 +31,7 @@ public class CategoryHelper {
     public static Category create(String name, Integer id) {
         Category category = getCategoryById(id);
         if (category != null) {
+            updateCategory(category, name);
             return category;
         }
         category = new Category();
@@ -60,4 +61,8 @@ public class CategoryHelper {
         return daoSession.getCategoryDao();
     }
 
+    private static void updateCategory(Category cat, String name) {
+        cat.setName(name);
+        getCategoryDao().update(cat);
+    }
 }

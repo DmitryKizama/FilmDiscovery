@@ -30,8 +30,11 @@ public class MovieHelper {
     public static Movie create(String posterPath, boolean adult, String overview, String releaseDate, Integer id,
                                String originalTitle, String originalLanguage, String title, String backdropPath, Double popularity,
                                Integer voteCount, Boolean video, Double voteAverage) {
-        Movie movie = getProductById(id);
+        Movie movie = getMovieById(id);
         if (movie != null) {
+            updateMovie(movie, posterPath, adult, overview, releaseDate,
+                    originalTitle, originalLanguage, title, backdropPath, popularity,
+                    voteCount, video, voteAverage);
             return movie;
         }
         movie = new Movie(posterPath, adult, overview, releaseDate, id,
@@ -41,7 +44,7 @@ public class MovieHelper {
         return movie;
     }
 
-    public static Movie getProductById(Integer id) {
+    public static Movie getMovieById(Integer id) {
         Query<Movie> query = getMovieDao().queryBuilder().where(MovieDao.Properties.Id.eq(id)).build();
         if (query.list().isEmpty()) {
             return null;
@@ -59,5 +62,23 @@ public class MovieHelper {
 
     public static MovieDao getMovieDao() {
         return daoSession.getMovieDao();
+    }
+
+    private static void updateMovie(Movie movie, String posterPath, boolean adult, String overview, String releaseDate,
+                                    String originalTitle, String originalLanguage, String title, String backdropPath, Double popularity,
+                                    Integer voteCount, Boolean video, Double voteAverage) {
+        movie.setPosterPath(posterPath);
+        movie.setAdult(adult);
+        movie.setOverview(overview);
+        movie.setReleaseDate(releaseDate);
+        movie.setOriginalTitle(originalTitle);
+        movie.setOriginalLanguage(originalLanguage);
+        movie.setTitle(title);
+        movie.setBackdropPath(backdropPath);
+        movie.setPopularity(popularity);
+        movie.setVoteCount(voteCount);
+        movie.setVideo(video);
+        movie.setVoteAverage(voteAverage);
+        getMovieDao().update(movie);
     }
 }

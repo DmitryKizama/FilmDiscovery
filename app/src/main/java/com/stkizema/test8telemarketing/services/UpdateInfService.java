@@ -3,21 +3,17 @@ package com.stkizema.test8telemarketing.services;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.TopApp;
 import com.stkizema.test8telemarketing.activites.MainActivity;
 import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
-import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.model.CategoryClient;
 import com.stkizema.test8telemarketing.model.CategoryResponse;
 import com.stkizema.test8telemarketing.model.MovieClient;
 import com.stkizema.test8telemarketing.model.MoviesResponse;
 import com.stkizema.test8telemarketing.util.Config;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,6 +22,7 @@ import retrofit2.Response;
 public class UpdateInfService extends android.app.Service {
 
     private static final String API_KEY = TopApp.getContext().getResources().getString(R.string.api_key);
+    private static final String EN_US = "en-US";
     public static final String ACTIONINSERVICE = "ACTIONINSERVICE";
 
     private final IBinder iBinder = new LocalBinder();
@@ -42,7 +39,7 @@ public class UpdateInfService extends android.app.Service {
     }
 
     public void fetchCategories() {
-        Call<CategoryResponse> call = TopApp.getApiClient().getCategoryFilms(API_KEY, "en-US");
+        Call<CategoryResponse> call = TopApp.getApiClient().getCategoryFilms(API_KEY, EN_US);
         call.enqueue(new Callback<CategoryResponse>() {
             @Override
             public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
@@ -51,7 +48,6 @@ public class UpdateInfService extends android.app.Service {
                 }
                 for (CategoryClient item : response.body().getGenres()) {
                     CategoryHelper.create(item.getName(), item.getId());
-
                 }
             }
 

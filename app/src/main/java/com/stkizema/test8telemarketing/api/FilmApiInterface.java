@@ -10,10 +10,13 @@ import retrofit2.http.Query;
 
 public interface FilmApiInterface {
 
+    //Get top rated movies from server by api_key
     @GET(Config.URL_GET_TOP_MOVIE_RATED)
     Call<MoviesResponse> getTopRatedFilms(@Query("api_key") String api_key);
 
+    //Get categories from server by api_key
     @GET(Config.URL_GET_CATEGOTY)
     Call<CategoryResponse> getCategoryFilms(@Query("api_key") String api_key, @Query("language") String language);
+
 
 }

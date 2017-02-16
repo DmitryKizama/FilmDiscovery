@@ -8,18 +8,21 @@ import android.view.ViewGroup;
 
 import com.koushikdutta.ion.Ion;
 import com.stkizema.test8telemarketing.R;
+import com.stkizema.test8telemarketing.db.CategoryHelper;
+import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.Movie;
 
 import java.util.List;
 
-public class AdapterMainMovies extends RecyclerView.Adapter<ViewHolderMain> {
+public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
 
     private static final String IMG_PATH = "https://image.tmdb.org/t/p/w500";
+    private static final String NOTHING = "";
 
     private List<Movie> list;
     private Context con;
 
-    public AdapterMainMovies(Context con, List<Movie> list) {
+    public MoviesAdapter(Context con, List<Movie> list) {
         this.list = list;
         this.con = con;
     }
@@ -47,9 +50,23 @@ public class AdapterMainMovies extends RecyclerView.Adapter<ViewHolderMain> {
                 .intoImageView(holder.imgMovie);
 //        holder.tvOriginalTitle.setText("Original title: " + list.get(position).getOriginalTitle());
         holder.tvTitle.setText(movie.getTitle());
-        holder.tvVotes.setText(movie.getVoteAverage() + "");
+        holder.tvVotes.setText(movie.getVoteAverage() + NOTHING);
         holder.tvReleaseDate.setText(movie.getReleaseDate());
         holder.tvDescription.setText(movie.getOverview());
+
+        holder.tvCategories.setText(getCategoriesStr(movie.getId()));
+    }
+
+    private String getCategoriesStr(Integer id) {
+        List<Category> listCat = CategoryHelper.getCategoriesByMovieId(id);
+        String str = NOTHING;
+        if (listCat != null) {
+            for (Category category : listCat) {
+                str = str + category.getName() + ", ";
+            }
+            str = str.substring(0, str.length() - 2);
+        }
+        return str;
     }
 
     @Override

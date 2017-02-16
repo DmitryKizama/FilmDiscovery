@@ -6,7 +6,7 @@ import com.stkizema.test8telemarketing.BuildConfig;
 
 public class Logger{
 
-    private static String currentTag = "CT";
+    private static String currentTag = "WATAFUCK";
 
     public static void setCurrentTag(String tag){
         currentTag = tag;

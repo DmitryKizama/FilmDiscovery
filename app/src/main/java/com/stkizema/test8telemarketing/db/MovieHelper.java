@@ -6,6 +6,7 @@ import com.stkizema.test8telemarketing.TopApp;
 import com.stkizema.test8telemarketing.db.model.DaoSession;
 import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.db.model.MovieDao;
+import com.stkizema.test8telemarketing.util.Logger;
 
 import org.greenrobot.greendao.query.Query;
 
@@ -27,7 +28,7 @@ public class MovieHelper {
         return instance;
     }
 
-    public static Movie create(String posterPath, boolean adult, String overview, String releaseDate, Integer id,
+    public static Movie create(List<Integer> listIdCategories, String posterPath, boolean adult, String overview, String releaseDate, Integer id,
                                String originalTitle, String originalLanguage, String title, String backdropPath, Double popularity,
                                Integer voteCount, Boolean video, Double voteAverage) {
         Movie movie = getMovieById(id);
@@ -36,6 +37,9 @@ public class MovieHelper {
                     originalTitle, originalLanguage, title, backdropPath, popularity,
                     voteCount, video, voteAverage);
             return movie;
+        }
+        for (Integer i : listIdCategories) {
+            LinkHelper.createLink(id, i);
         }
         movie = new Movie(posterPath, adult, overview, releaseDate, id,
                 originalTitle, originalLanguage, title, backdropPath, popularity,
@@ -58,6 +62,10 @@ public class MovieHelper {
             return null;
         }
         return query.list();
+    }
+
+    public static List<Movie> getMoviesByCategoryId(Integer id) {
+        return LinkHelper.getMoviesByCategoryId(id);
     }
 
     public static MovieDao getMovieDao() {

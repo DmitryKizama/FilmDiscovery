@@ -14,6 +14,7 @@ import com.stkizema.test8telemarketing.model.CategoryResponse;
 import com.stkizema.test8telemarketing.model.MovieClient;
 import com.stkizema.test8telemarketing.model.MoviesResponse;
 import com.stkizema.test8telemarketing.util.Config;
+import com.stkizema.test8telemarketing.util.Logger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,7 +67,7 @@ public class UpdateInfService extends android.app.Service {
                     return;
                 }
                 for (MovieClient item : response.body().getListMovies()) {
-                    MovieHelper.create(item.getPosterPath(), item.isAdult(), item.getOverview(), item.getReleaseDate(), item.getId(), item.getOriginalTitle(), item.getOriginalLanguage(),
+                    MovieHelper.create(item.getGenreIds(), item.getPosterPath(), item.isAdult(), item.getOverview(), item.getReleaseDate(), item.getId(), item.getOriginalTitle(), item.getOriginalLanguage(),
                             item.getTitle(), item.getBackdropPath(), item.getPopularity(), item.getVoteCount(), item.getVideo(), item.getVoteAverage());
                 }
 

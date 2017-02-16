@@ -61,6 +61,10 @@ public class CategoryHelper {
         return daoSession.getCategoryDao();
     }
 
+    public static List<Category> getCategoriesByMovieId(Integer id) {
+        return LinkHelper.getCategoriesByMovieId(id);
+    }
+
     private static void updateCategory(Category cat, String name) {
         cat.setName(name);
         getCategoryDao().update(cat);

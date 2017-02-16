@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.activites.controllers.TopMainController;
-import com.stkizema.test8telemarketing.adapters.AdapterMainMovies;
+import com.stkizema.test8telemarketing.adapters.MoviesAdapter;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.services.UpdateInfService;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private UpdateInfService updateInfService;
     private RecyclerView rvMain;
     private TextView tvNoItems;
-    private AdapterMainMovies adapterMainMovies;
+    private MoviesAdapter moviesAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private BroadcastReceiver broadcastReceiver;
     private TopMainController topMainController;
@@ -82,16 +82,16 @@ public class MainActivity extends AppCompatActivity {
 
         rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         rvMain = (RecyclerView) findViewById(R.id.rv_main);
-        adapterMainMovies = new AdapterMainMovies(this, null);
+        moviesAdapter = new MoviesAdapter(this, null);
         rvMain.setHasFixedSize(true);
-        rvMain.setAdapter(adapterMainMovies);
+        rvMain.setAdapter(moviesAdapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, COLUMN_NUMBER, LinearLayoutManager.VERTICAL, false);
         rvMain.setLayoutManager(gridLayoutManager);
 
         tvNoItems = (TextView) findViewById(R.id.tv_no_items);
         rvVisible(true);
         List<Movie> list = MovieHelper.getTopRatedListMovies();
-        adapterMainMovies.setList(list);
+        moviesAdapter.setList(list);
 
         broadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
             case Config.OK: //OK
                 Logger.logd("NETWORK", "Good");
                 swipeRefreshLayout.setRefreshing(false);
-                adapterMainMovies.setList(list);
+                moviesAdapter.setList(list);
                 break;
             case Config.BAD_REQUEST: //NO NETWORK
                 Toast.makeText(MainActivity.this, "No network", Toast.LENGTH_SHORT).show();
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                     rvVisible(false);
                     return;
                 }
-                adapterMainMovies.setList(list);
+                moviesAdapter.setList(list);
                 break;
 
 

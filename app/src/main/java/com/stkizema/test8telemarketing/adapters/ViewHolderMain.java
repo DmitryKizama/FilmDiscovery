@@ -10,7 +10,7 @@ import com.stkizema.test8telemarketing.R;
 public class ViewHolderMain extends RecyclerView.ViewHolder {
 
     public ImageView imgMovie;
-    public TextView tvTitle, tvPopularity, tvVotes, tvReleaseDate, tvOriginalTitle, tvDescription;
+    public TextView tvTitle, tvPopularity, tvVotes, tvReleaseDate, tvOriginalTitle, tvDescription, tvCategories;
 
     public ViewHolderMain(View itemView) {
         super(itemView);
@@ -21,5 +21,6 @@ public class ViewHolderMain extends RecyclerView.ViewHolder {
 //        tvOriginalTitle = (TextView) itemView.findViewById(R.id.tv_original_title);
         tvReleaseDate = (TextView) itemView.findViewById(R.id.tv_release_date);
         tvDescription = (TextView) itemView.findViewById(R.id.tv_description);
+        tvCategories = (TextView) itemView.findViewById(R.id.tv_categories);
     }
 }

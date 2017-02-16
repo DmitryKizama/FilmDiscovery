@@ -27,6 +27,7 @@ import com.stkizema.test8telemarketing.adapters.AdapterMainMovies;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.services.UpdateInfService;
+import com.stkizema.test8telemarketing.util.Config;
 import com.stkizema.test8telemarketing.util.Logger;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
@@ -40,6 +41,7 @@ import static android.view.View.VISIBLE;
 public class MainActivity extends AppCompatActivity {
 
     public static final String BROADCAST_ACTION_MOVIES = "BROADCASTACTION";
+    private static final int COLUMN_NUMBER = 1;
 
     private UpdateInfService updateInfService;
     private RecyclerView rvMain;
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         adapterMainMovies = new AdapterMainMovies(this, null);
         rvMain.setHasFixedSize(true);
         rvMain.setAdapter(adapterMainMovies);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1, LinearLayoutManager.VERTICAL, false);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, COLUMN_NUMBER, LinearLayoutManager.VERTICAL, false);
         rvMain.setLayoutManager(gridLayoutManager);
 
         tvNoItems = (TextView) findViewById(R.id.tv_no_items);
@@ -161,17 +163,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void onReceivedMovieBroadcast(Intent intent){
+    private void onReceivedMovieBroadcast(Intent intent) {
         List<Movie> list = MovieHelper.getTopRatedListMovies();
         rvVisible(true);
 
         switch (intent.getIntExtra(UpdateInfService.ACTIONINSERVICE, 0)) {
-            case 200: //OK
+            case 0: // ERROR
+                Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+                swipeRefreshLayout.setRefreshing(false);
+                break;
+            case Config.OK: //OK
                 Logger.logd("NETWORK", "Good");
                 swipeRefreshLayout.setRefreshing(false);
                 adapterMainMovies.setList(list);
                 break;
-            case 400: //NO NETWORK
+            case Config.BAD_REQUEST: //NO NETWORK
                 Toast.makeText(MainActivity.this, "No network", Toast.LENGTH_SHORT).show();
                 swipeRefreshLayout.setRefreshing(false);
                 if (list == null) {
@@ -184,10 +190,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 adapterMainMovies.setList(list);
                 break;
-            case 0: // ERROR
-                Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
-                swipeRefreshLayout.setRefreshing(false);
-                break;
+
+
         }
     }
 }

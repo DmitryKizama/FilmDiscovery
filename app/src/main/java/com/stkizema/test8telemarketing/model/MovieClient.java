@@ -1,39 +1,40 @@
 package com.stkizema.test8telemarketing.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.stkizema.test8telemarketing.util.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MovieClient {
-    @SerializedName("poster_path")
+    @SerializedName(Config.POSTER_PATH)
     private String posterPath;
-    @SerializedName("adult")
+    @SerializedName(Config.ADULT)
     private boolean adult;
-    @SerializedName("overview")
+    @SerializedName(Config.OVERVIEW)
     private String overview;
-    @SerializedName("release_date")
+    @SerializedName(Config.RELEASE_DATE)
     private String releaseDate;
-    @SerializedName("genre_ids")
+    @SerializedName(Config.GENRE_IDS)
     private List<Integer> genreIds = new ArrayList<Integer>();
-    @SerializedName("id")
+    @SerializedName(Config.ID_MOVIE)
     private Integer id;
-    @SerializedName("original_title")
+    @SerializedName(Config.ORIGINAL_TITLE)
     private String originalTitle;
-    @SerializedName("original_language")
+    @SerializedName(Config.ORIGINAL_LANGUAGE)
     private String originalLanguage;
-    @SerializedName("title")
+    @SerializedName(Config.TITLE)
     private String title;
-    @SerializedName("backdrop_path")
+    @SerializedName(Config.BACKDROP_PATH)
     private String backdropPath;
-    @SerializedName("popularity")
+    @SerializedName(Config.POPULARITY)
     private Double popularity;
-    @SerializedName("vote_count")
+    @SerializedName(Config.VOTE_COUNT)
     private Integer voteCount;
-    @SerializedName("video")
+    @SerializedName(Config.VIDEO)
     private Boolean video;
-    @SerializedName("vote_average")
+    @SerializedName(Config.VOTE_AVERAGE)
     private Double voteAverage;
 
     public MovieClient(String posterPath, boolean adult, String overview, String releaseDate, List<Integer> genreIds, Integer id,

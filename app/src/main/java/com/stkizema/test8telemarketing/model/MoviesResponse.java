@@ -1,17 +1,18 @@
 package com.stkizema.test8telemarketing.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.stkizema.test8telemarketing.util.Config;
 
 import java.util.List;
 
 public class MoviesResponse {
-    @SerializedName("page")
+    @SerializedName(Config.PAGE)
     private int page;
-    @SerializedName("results")
+    @SerializedName(Config.RESULTS)
     private List<MovieClient> results;
-    @SerializedName("total_results")
+    @SerializedName(Config.TOTAL_RESULTS)
     private int totalResults;
-    @SerializedName("total_pages")
+    @SerializedName(Config.TOTAL_PAGES)
     private int totalPages;
 
     public int getPage() {

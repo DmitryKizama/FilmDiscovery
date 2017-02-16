@@ -14,6 +14,8 @@ import java.util.List;
 
 public class AdapterMainMovies extends RecyclerView.Adapter<ViewHolderMain> {
 
+    private static final String IMG_PATH = "https://image.tmdb.org/t/p/w500";
+
     private List<Movie> list;
     private Context con;
 
@@ -38,7 +40,7 @@ public class AdapterMainMovies extends RecyclerView.Adapter<ViewHolderMain> {
 //        holder.getAdapterPosition();
         Movie movie = list.get(position);
         Ion.with(con)
-                .load("https://image.tmdb.org/t/p/w500" + movie.getPosterPath())
+                .load(IMG_PATH + movie.getPosterPath())
                 .withBitmap()
                 .placeholder(R.drawable.defaultimg)
                 .error(R.drawable.defaultimg)

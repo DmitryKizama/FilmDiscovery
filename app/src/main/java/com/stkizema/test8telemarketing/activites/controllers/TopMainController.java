@@ -14,15 +14,25 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.stkizema.test8telemarketing.R;
+import com.stkizema.test8telemarketing.TopApp;
 import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.Movie;
+import com.stkizema.test8telemarketing.model.MovieClient;
+import com.stkizema.test8telemarketing.model.MoviesResponse;
+import com.stkizema.test8telemarketing.util.Config;
+import com.stkizema.test8telemarketing.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TopMainController {
 
@@ -36,8 +46,14 @@ public class TopMainController {
     private ArrayAdapter<String> adapter;
 
     private HintHelper hintHelper;
+    private OnSearchListener listener;
 
-    public TopMainController(View parent, final Context context) {
+    public interface OnSearchListener {
+        void setListMovies(List<Movie> list);
+    }
+
+    public TopMainController(OnSearchListener listener, View parent, final Context context) {
+        this.listener = listener;
         this.parent = parent;
         this.context = context;
 
@@ -142,12 +158,100 @@ public class TopMainController {
         tvAutocomplete.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                Log.d(TAG, "onEditorAction");
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
-                    Log.d(TAG, "Search");
+                    String text = tvAutocomplete.getText().toString();
+                    if (searchMovie){
+                        makeCallMovie(text);
+                    }else {
+                        makeCallCategory(text);
+                    }
                     return true;
                 }
                 return true;
+            }
+        });
+    }
+
+    private void makeCallMovie(String text){
+        Movie movie = MovieHelper.getMovieByName(text);
+        if (movie == null){
+//            Toast.makeText(context, "We haven`t such film", Toast.LENGTH_SHORT).show();
+            //TODO: fill db
+        }
+        Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByName(Config.API_KEY, text);
+        call.enqueue(new Callback<MoviesResponse>() {
+            @Override
+            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                if (response.body() == null) {
+                    return;
+                }
+                List<Movie> list = new ArrayList<>();
+                for (MovieClient m : response.body().getListMovies()) {
+                    Movie mov = new Movie();
+                    mov.setVoteAverage(m.getVoteAverage());
+                    mov.setVideo(m.getVideo());
+                    mov.setVoteCount(m.getVoteCount());
+                    mov.setPopularity(m.getPopularity());
+                    mov.setAdult(m.isAdult());
+                    mov.setBackdropPath(m.getBackdropPath());
+                    mov.setId(m.getId());
+                    mov.setOriginalLanguage(m.getOriginalLanguage());
+                    mov.setOriginalTitle(m.getOriginalTitle());
+                    mov.setOverview(m.getOverview());
+                    mov.setTitle(m.getTitle());
+                    mov.setReleaseDate(m.getReleaseDate());
+                    mov.setPosterPath(m.getPosterPath());
+                    list.add(mov);
+                }
+                listener.setListMovies(list);
+            }
+
+            @Override
+            public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                Toast.makeText(context, "We haven`t such film", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void makeCallCategory(String text) {
+        Category category = CategoryHelper.getCategoryByName(text);
+        if (category == null) {
+            Toast.makeText(context, "We haven`t such category", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByCategory(category.getId(),
+                Config.API_KEY, Config.EN_US, Config.INCLUDE_ADULT, Config.SORT_BY);
+        call.enqueue(new Callback<MoviesResponse>() {
+            @Override
+            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                if (response.body() == null) {
+                    return;
+                }
+                List<Movie> list = new ArrayList<>();
+                for (MovieClient m : response.body().getListMovies()) {
+                    Movie mov = new Movie();
+                    mov.setVoteAverage(m.getVoteAverage());
+                    mov.setVideo(m.getVideo());
+                    mov.setVoteCount(m.getVoteCount());
+                    mov.setPopularity(m.getPopularity());
+                    mov.setAdult(m.isAdult());
+                    mov.setBackdropPath(m.getBackdropPath());
+                    mov.setId(m.getId());
+                    mov.setOriginalLanguage(m.getOriginalLanguage());
+                    mov.setOriginalTitle(m.getOriginalTitle());
+                    mov.setOverview(m.getOverview());
+                    mov.setTitle(m.getTitle());
+                    mov.setReleaseDate(m.getReleaseDate());
+                    mov.setPosterPath(m.getPosterPath());
+                    list.add(mov);
+                }
+                listener.setListMovies(list);
+            }
+
+            @Override
+            public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                Logger.logd("fail");
             }
         });
     }
@@ -172,7 +276,6 @@ public class TopMainController {
 
         hintHelper.runHintAnimation();
     }
-
 
     private class HintHelper {
         private TextView tvHint;

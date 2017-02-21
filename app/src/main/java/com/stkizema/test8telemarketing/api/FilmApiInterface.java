@@ -6,6 +6,7 @@ import com.stkizema.test8telemarketing.util.Config;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface FilmApiInterface {
@@ -15,8 +16,13 @@ public interface FilmApiInterface {
     Call<MoviesResponse> getTopRatedFilms(@Query("api_key") String api_key);
 
     //Get categories from server by api_key
-    @GET(Config.URL_GET_CATEGOTY)
+    @GET(Config.URL_GET_CATEGORY)
     Call<CategoryResponse> getCategoryFilms(@Query("api_key") String api_key, @Query("language") String language);
 
+    @GET(Config.URL_GET_MOVIES_BY_CATEGORY)
+    Call<MoviesResponse> getMoviesByCategory(@Path("id") Integer idCategory, @Query("api_key") String api_key, @Query("language") String language,
+                                             @Query("include_adult") String include_adult, @Query("sort_by") String sort);
 
+    @GET(Config.URL_GET_MOVIE_BY_NAME)
+    Call<MoviesResponse> getMoviesByName(@Query("api_key") String api_key, @Query("query") String nameMovie);
 }

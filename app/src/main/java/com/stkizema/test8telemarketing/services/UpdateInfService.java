@@ -22,8 +22,7 @@ import retrofit2.Response;
 
 public class UpdateInfService extends android.app.Service {
 
-    private static final String API_KEY = TopApp.getContext().getResources().getString(R.string.api_key);
-    private static final String EN_US = "en-US";
+
     public static final String ACTIONINSERVICE = "ACTIONINSERVICE";
 
     private final IBinder iBinder = new LocalBinder();
@@ -40,7 +39,7 @@ public class UpdateInfService extends android.app.Service {
     }
 
     public void fetchCategories() {
-        Call<CategoryResponse> call = TopApp.getApiClient().getCategoryFilms(API_KEY, EN_US);
+        Call<CategoryResponse> call = TopApp.getApiClient().getCategoryFilms(Config.API_KEY, Config.EN_US);
         call.enqueue(new Callback<CategoryResponse>() {
             @Override
             public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
@@ -59,7 +58,7 @@ public class UpdateInfService extends android.app.Service {
     }
 
     public void fetchMovies() {
-        Call<MoviesResponse> call = TopApp.getApiClient().getTopRatedFilms(API_KEY);
+        Call<MoviesResponse> call = TopApp.getApiClient().getTopRatedFilms(Config.API_KEY);
         call.enqueue(new Callback<MoviesResponse>() {
             @Override
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {

@@ -49,6 +49,14 @@ public class CategoryHelper {
         return query.list().get(0);
     }
 
+    public static Category getCategoryByName(String name) {
+        Query<Category> query = getCategoryDao().queryBuilder().where(CategoryDao.Properties.Name.eq(name)).build();
+        if (query.list().isEmpty()) {
+            return null;
+        }
+        return query.list().get(0);
+    }
+
     public static List<Category> getAllCategory() {
         Query<Category> query = getCategoryDao().queryBuilder().orderAsc(CategoryDao.Properties.IdCategory).build();
         if (query.list().isEmpty()) {

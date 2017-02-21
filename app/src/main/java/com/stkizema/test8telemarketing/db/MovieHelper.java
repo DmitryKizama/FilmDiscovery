@@ -56,6 +56,14 @@ public class MovieHelper {
         return query.list().get(0);
     }
 
+    public static Movie getMovieByName(String name) {
+        Query<Movie> query = getMovieDao().queryBuilder().where(MovieDao.Properties.Title.eq(name)).build();
+        if (query.list().isEmpty()) {
+            return null;
+        }
+        return query.list().get(0);
+    }
+
     public static List<Movie> getTopRatedListMovies() {
         Query<Movie> query = getMovieDao().queryBuilder().orderAsc(MovieDao.Properties.IdMovie).build();
         if (query.list().isEmpty()) {

@@ -38,7 +38,7 @@ import java.util.List;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TopMainController.OnSearchListener {
 
     public static final String BROADCAST_ACTION_MOVIES = "BROADCASTACTION";
     private static final int COLUMN_NUMBER = 1;
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         View view = LayoutInflater.from(this).inflate(R.layout.layout_top_controller, frameTopLayout, false);
         frameTopLayout.removeAllViews();
         frameTopLayout.addView(view);
-        topMainController = new TopMainController(frameTopLayout, this);
+        topMainController = new TopMainController(this, frameTopLayout, this);
 
         KeyboardVisibilityEvent.setEventListener(this, new KeyboardVisibilityEventListener() {
             @Override
@@ -193,5 +193,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    @Override
+    public void setListMovies(List<Movie> list) {
+        moviesAdapter.setList(list);
     }
 }

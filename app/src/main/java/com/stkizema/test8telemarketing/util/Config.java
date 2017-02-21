@@ -1,9 +1,14 @@
 package com.stkizema.test8telemarketing.util;
 
+import com.stkizema.test8telemarketing.R;
+import com.stkizema.test8telemarketing.TopApp;
+
 public class Config {
 
     public static final String URL_GET_TOP_MOVIE_RATED = "movie/top_rated";
-    public static final String URL_GET_CATEGOTY = "genre/movie/list";
+    public static final String URL_GET_CATEGORY = "genre/movie/list";
+    public static final String URL_GET_MOVIES_BY_CATEGORY = "genre/{id}/movies";
+    public static final String URL_GET_MOVIE_BY_NAME = "search/movie";
 
     // MovieClient constants
     public static final String POSTER_PATH = "poster_path";
@@ -37,4 +42,9 @@ public class Config {
     //List of HTTP status codes
     public static final int OK = 200;
     public static final int BAD_REQUEST = 400;
+
+    public static final String API_KEY = TopApp.getContext().getResources().getString(R.string.api_key);
+    public static final String EN_US = "en-US";
+    public static final String INCLUDE_ADULT = "false";
+    public static final String SORT_BY = "created_at.asc";
 }

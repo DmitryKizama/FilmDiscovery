@@ -43,7 +43,7 @@
                 android:alpha="0.4"
                 android:gravity="center"
                 android:paddingBottom="@android:dimen/notification_large_icon_height"
-                android:text="No internet connection"
+                android:text="No items"
                 android:textSize="44sp" />
 
         </RelativeLayout>

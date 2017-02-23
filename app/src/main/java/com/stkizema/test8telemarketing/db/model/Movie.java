@@ -17,55 +17,42 @@ public class Movie {
     @Id
     private Long idMovie;
 
-    @NotNull
     @Property(nameInDb = "posterPath")
     private String posterPath;
 
-    @NotNull
     @Property(nameInDb = "adult")
     private boolean adult;
 
-    @NotNull
     @Property(nameInDb = "overview")
     private String overview;
 
-    @NotNull
     @Property(nameInDb = "releaseDate")
     private String releaseDate;
 
-    @NotNull
     @Property(nameInDb = "id")
     private Integer id;
 
-    @NotNull
     @Property(nameInDb = "originalTitle")
     private String originalTitle;
 
-    @NotNull
     @Property(nameInDb = "originalLanguage")
     private String originalLanguage;
 
-    @NotNull
     @Property(nameInDb = "title")
     private String title;
 
-    @NotNull
     @Property(nameInDb = "backdropPath")
     private String backdropPath;
 
-    @NotNull
     @Property(nameInDb = "popularity")
     private Double popularity;
 
-    @NotNull
     @Property(nameInDb = "voteCount")
     private Integer voteCount;
 
-    @NotNull
     @Property(nameInDb = "video")
     private Boolean video;
 
-    @NotNull
     @Property(nameInDb = "voteAverage")
     private Double voteAverage;
 
@@ -87,11 +74,10 @@ public class Movie {
         this.voteAverage = voteAverage;
     }
 
-    @Generated(hash = 2055581610)
-    public Movie(Long idMovie, @NotNull String posterPath, boolean adult, @NotNull String overview, @NotNull String releaseDate,
-            @NotNull Integer id, @NotNull String originalTitle, @NotNull String originalLanguage, @NotNull String title,
-            @NotNull String backdropPath, @NotNull Double popularity, @NotNull Integer voteCount, @NotNull Boolean video,
-            @NotNull Double voteAverage) {
+    @Generated(hash = 301172728)
+    public Movie(Long idMovie, String posterPath, boolean adult, String overview, String releaseDate, Integer id,
+            String originalTitle, String originalLanguage, String title, String backdropPath, Double popularity, Integer voteCount,
+            Boolean video, Double voteAverage) {
         this.idMovie = idMovie;
         this.posterPath = posterPath;
         this.adult = adult;

@@ -6,7 +6,6 @@ import com.stkizema.test8telemarketing.TopApp;
 import com.stkizema.test8telemarketing.db.model.DaoSession;
 import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.db.model.MovieDao;
-import com.stkizema.test8telemarketing.util.Logger;
 
 import org.greenrobot.greendao.query.Query;
 
@@ -56,12 +55,12 @@ public class MovieHelper {
         return query.list().get(0);
     }
 
-    public static Movie getMovieByName(String name) {
+    public static List<Movie> getMovieByName(String name) {
         Query<Movie> query = getMovieDao().queryBuilder().where(MovieDao.Properties.Title.eq(name)).build();
         if (query.list().isEmpty()) {
             return null;
         }
-        return query.list().get(0);
+        return query.list();
     }
 
     public static List<Movie> getTopRatedListMovies() {

@@ -5,34 +5,26 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.stkizema.test8telemarketing.R;
-import com.stkizema.test8telemarketing.TopApp;
 import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.Movie;
-import com.stkizema.test8telemarketing.model.MovieClient;
-import com.stkizema.test8telemarketing.model.MoviesResponse;
-import com.stkizema.test8telemarketing.util.Config;
+import com.stkizema.test8telemarketing.services.FetchApi;
 import com.stkizema.test8telemarketing.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class TopMainController {
 
@@ -42,21 +34,16 @@ public class TopMainController {
     private Context context;
     private AutoCompleteTextView tvAutocomplete;
     private ImageView btnMenu, btnNextSearch, btnDelete;
-    private boolean searchMovie = false;
+    private boolean searchMovie;
     private ArrayAdapter<String> adapter;
 
     private HintHelper hintHelper;
-    private OnSearchListener listener;
+    private FetchApi fetchApi;
 
-    public interface OnSearchListener {
-        void setListMovies(List<Movie> list);
-    }
-
-    public TopMainController(OnSearchListener listener, View parent, final Context context) {
-        this.listener = listener;
+    public TopMainController(View parent, final Context context, FetchApi fetchApi) {
         this.parent = parent;
         this.context = context;
-
+        this.fetchApi = fetchApi;
         onCreate();
     }
 
@@ -64,16 +51,14 @@ public class TopMainController {
     }
 
     public void keyboardClose() {
-        tvAutocomplete.setFocusable(false);
-        tvAutocomplete.setFocusableInTouchMode(false);
+//        tvAutocomplete.setFocusable(false);
+//        tvAutocomplete.setFocusableInTouchMode(false);
     }
 
     private void setContent(boolean isMovie) {
-
         List<Movie> listMov = MovieHelper.getTopRatedListMovies();
         List<Category> listCat = CategoryHelper.getAllCategory();
         if (listMov == null || listCat == null) {
-            Log.d("SERVICEPROBLMS", "list movies null ot list categories null");
             return;
         }
 
@@ -93,7 +78,8 @@ public class TopMainController {
         } else {
             adapter.addAll(listCategories);
         }
-        adapter.notifyDataSetInvalidated();
+        adapter.notifyDataSetChanged();
+//        adapter.notifyDataSetInvalidated();
 
     }
 
@@ -106,7 +92,6 @@ public class TopMainController {
 
         adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line);
         tvAutocomplete.setAdapter(adapter);
-        tvAutocomplete.setFocusableInTouchMode(false);
 
         hintHelper = new HintHelper(tvHint);
 
@@ -123,19 +108,28 @@ public class TopMainController {
         btnNextSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                tvAutocomplete.dismissDropDown();
                 animateTextView();
             }
         });
 
-        tvAutocomplete.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                tvAutocomplete.setFocusableInTouchMode(true);
-                if (!searchMovie) {
-                    tvAutocomplete.showDropDown();
+        searchMovie = false;
+//        tvAutocomplete.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                tvAutocomplete.setFocusableInTouchMode(true);
+//                return false;
+//            }
+//        });
 
+        tvAutocomplete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.logd("onClick");
+                if (!searchMovie) {
+                    Logger.logd("false");
+                    tvAutocomplete.showDropDown();
                 }
-                return false;
             }
         });
 
@@ -160,98 +154,17 @@ public class TopMainController {
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     String text = tvAutocomplete.getText().toString();
-                    if (searchMovie){
-                        makeCallMovie(text);
-                    }else {
-                        makeCallCategory(text);
+                    if (searchMovie) {
+                        fetchApi.fetchMovieById(text);
+                    } else {
+                        fetchApi.fetchMoviesByCategory(text);
                     }
+                    tvAutocomplete.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
                     return true;
                 }
                 return true;
-            }
-        });
-    }
-
-    private void makeCallMovie(String text){
-        Movie movie = MovieHelper.getMovieByName(text);
-        if (movie == null){
-//            Toast.makeText(context, "We haven`t such film", Toast.LENGTH_SHORT).show();
-            //TODO: fill db
-        }
-        Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByName(Config.API_KEY, text);
-        call.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                if (response.body() == null) {
-                    return;
-                }
-                List<Movie> list = new ArrayList<>();
-                for (MovieClient m : response.body().getListMovies()) {
-                    Movie mov = new Movie();
-                    mov.setVoteAverage(m.getVoteAverage());
-                    mov.setVideo(m.getVideo());
-                    mov.setVoteCount(m.getVoteCount());
-                    mov.setPopularity(m.getPopularity());
-                    mov.setAdult(m.isAdult());
-                    mov.setBackdropPath(m.getBackdropPath());
-                    mov.setId(m.getId());
-                    mov.setOriginalLanguage(m.getOriginalLanguage());
-                    mov.setOriginalTitle(m.getOriginalTitle());
-                    mov.setOverview(m.getOverview());
-                    mov.setTitle(m.getTitle());
-                    mov.setReleaseDate(m.getReleaseDate());
-                    mov.setPosterPath(m.getPosterPath());
-                    list.add(mov);
-                }
-                listener.setListMovies(list);
-            }
-
-            @Override
-            public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                Toast.makeText(context, "We haven`t such film", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-
-    private void makeCallCategory(String text) {
-        Category category = CategoryHelper.getCategoryByName(text);
-        if (category == null) {
-            Toast.makeText(context, "We haven`t such category", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByCategory(category.getId(),
-                Config.API_KEY, Config.EN_US, Config.INCLUDE_ADULT, Config.SORT_BY);
-        call.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                if (response.body() == null) {
-                    return;
-                }
-                List<Movie> list = new ArrayList<>();
-                for (MovieClient m : response.body().getListMovies()) {
-                    Movie mov = new Movie();
-                    mov.setVoteAverage(m.getVoteAverage());
-                    mov.setVideo(m.getVideo());
-                    mov.setVoteCount(m.getVoteCount());
-                    mov.setPopularity(m.getPopularity());
-                    mov.setAdult(m.isAdult());
-                    mov.setBackdropPath(m.getBackdropPath());
-                    mov.setId(m.getId());
-                    mov.setOriginalLanguage(m.getOriginalLanguage());
-                    mov.setOriginalTitle(m.getOriginalTitle());
-                    mov.setOverview(m.getOverview());
-                    mov.setTitle(m.getTitle());
-                    mov.setReleaseDate(m.getReleaseDate());
-                    mov.setPosterPath(m.getPosterPath());
-                    list.add(mov);
-                }
-                listener.setListMovies(list);
-            }
-
-            @Override
-            public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                Logger.logd("fail");
             }
         });
     }

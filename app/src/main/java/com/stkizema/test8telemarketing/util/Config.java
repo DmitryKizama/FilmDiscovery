@@ -40,8 +40,8 @@ public class Config {
     public static final String NAME = "name";
 
     //List of HTTP status codes
-    public static final int OK = 200;
-    public static final int BAD_REQUEST = 400;
+    public static final String OK = "OK";
+    public static final String BAD_REQUEST = "NO NETWORK";
 
     public static final String API_KEY = TopApp.getContext().getResources().getString(R.string.api_key);
     public static final String EN_US = "en-US";

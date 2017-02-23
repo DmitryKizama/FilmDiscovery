@@ -57,17 +57,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
         holder.tvCategories.setText(getCategoriesStr(movie.getId()));
     }
 
-    private String getCategoriesStr(Integer id) {
-        List<Category> listCat = CategoryHelper.getCategoriesByMovieId(id);
-        String str = NOTHING;
-        if (listCat != null) {
-            for (Category category : listCat) {
-                str = str + category.getName() + ", ";
-            }
-            str = str.substring(0, str.length() - 2);
-        }
-        return str;
-    }
 
     @Override
     public int getItemCount() {
@@ -76,4 +65,20 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
         }
         return list.size();
     }
+
+
+    private String getCategoriesStr(Integer id) {
+        List<Category> listCat = CategoryHelper.getCategoriesByMovieId(id);
+        String str = NOTHING;
+        if (listCat != null) {
+            for (Category category : listCat) {
+                if (category != null) {
+                    str = str + category.getName() + ", ";
+                }
+            }
+            str = str.substring(0, str.length() - 2);
+        }
+        return str;
+    }
+
 }

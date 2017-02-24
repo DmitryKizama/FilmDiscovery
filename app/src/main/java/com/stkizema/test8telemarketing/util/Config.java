@@ -9,6 +9,7 @@ public class Config {
     public static final String URL_GET_CATEGORY = "genre/movie/list";
     public static final String URL_GET_MOVIES_BY_CATEGORY = "genre/{id}/movies";
     public static final String URL_GET_MOVIE_BY_NAME = "search/movie";
+    public static final String URL_GET_VIDEO_DETAILS = "movie/{id}/videos";
 
     // MovieClient constants
     public static final String POSTER_PATH = "poster_path";

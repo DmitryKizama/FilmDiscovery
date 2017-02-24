@@ -15,12 +15,15 @@ import android.widget.Toast;
 
 import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.activites.controllers.TopMainController;
+import com.stkizema.test8telemarketing.activites.dialogs.MovieDialog;
 import com.stkizema.test8telemarketing.adapters.MoviesAdapter;
 import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.Movie;
+import com.stkizema.test8telemarketing.db.model.Video;
 import com.stkizema.test8telemarketing.services.FetchApi;
 import com.stkizema.test8telemarketing.services.OnResponseListener;
 import com.stkizema.test8telemarketing.util.Config;
+import com.stkizema.test8telemarketing.util.Logger;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
@@ -30,7 +33,7 @@ import java.util.List;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class MainActivity extends AppCompatActivity implements OnResponseListener {
+public class MainActivity extends AppCompatActivity implements OnResponseListener, MoviesAdapter.ItemListener {
 
     private static final int COLUMN_NUMBER = 1;
 
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
 
         rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         rvMain = (RecyclerView) findViewById(R.id.rv_main);
-        moviesAdapter = new MoviesAdapter(this, null);
+        moviesAdapter = new MoviesAdapter(this, this, null);
         rvMain.setHasFixedSize(true);
         rvMain.setAdapter(moviesAdapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, COLUMN_NUMBER, LinearLayoutManager.VERTICAL, false);
@@ -127,7 +130,25 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     }
 
     @Override
+    public void onResponseVideo(List<Video> list) {
+        swipeRefreshLayout.setRefreshing(false);
+        if (list == null) {
+            Toast.makeText(this, "Downloading error", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        MovieDialog movieDialog = new MovieDialog(list, this);
+        movieDialog.show();
+    }
+
+    @Override
     public void onBeginFetch() {
+        //TODO: DISABLE SCREEN
         swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void onItemClick(Movie movie) {
+        Logger.logd("movie id = " + movie.getId());
+        fetchApi.fetchVideoByMovieId(movie.getId());
     }
 }

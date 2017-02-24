@@ -6,13 +6,18 @@ import android.widget.Toast;
 import com.stkizema.test8telemarketing.TopApp;
 import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
+import com.stkizema.test8telemarketing.db.VideoHelper;
 import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.Movie;
+import com.stkizema.test8telemarketing.db.model.Video;
 import com.stkizema.test8telemarketing.model.CategoryClient;
 import com.stkizema.test8telemarketing.model.CategoryResponse;
 import com.stkizema.test8telemarketing.model.MovieClient;
 import com.stkizema.test8telemarketing.model.MoviesResponse;
+import com.stkizema.test8telemarketing.model.VideoClient;
+import com.stkizema.test8telemarketing.model.VideoResponse;
 import com.stkizema.test8telemarketing.util.Config;
+import com.stkizema.test8telemarketing.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +27,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FetchApi {
-    public static final String ACTIONINSERVICE = "ACTIONINSERVICE";
     private Context context;
     private OnResponseListener listener;
 
@@ -50,6 +54,37 @@ public class FetchApi {
         }
     }
 
+    public void fetchVideoByMovieId(final Integer id) {
+        listener.onBeginFetch();
+        Logger.logd("fetchVideoByMovieId");
+        Logger.logd("id= " + id);
+        Logger.logd("APIKEY = " + Config.API_KEY);
+        Call<VideoResponse> call = TopApp.getApiClient().getVideoByMovieId(id, Config.API_KEY, Config.EN_US);
+        call.enqueue(new Callback<VideoResponse>() {
+            @Override
+            public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
+                if (response.body() == null) {
+                    Logger.logd("body = null");
+                    return;
+                }
+                Logger.logd("OK");
+                List<Video> list = new ArrayList<>();
+                for (VideoClient item : response.body().getResults()) {
+                    Video video = VideoHelper.create(response.body().getId(), item.getId(), item.getIso_639_1(), item.getIso_3166_1(),
+                            item.getKey(), item.getName(), item.getSite(), item.getSize(), item.getType());
+                    list.add(video);
+                }
+                listener.onResponseVideo(list);
+            }
+
+            @Override
+            public void onFailure(Call<VideoResponse> call, Throwable t) {
+                Logger.logd("fail");
+                listener.onResponseVideo(VideoHelper.getVideosByMovieId(id));
+            }
+        });
+    }
+
     public void fetchCategories() {
         listener.onBeginFetch();
         Call<CategoryResponse> call = TopApp.getApiClient().getCategoryFilms(Config.API_KEY, Config.EN_US);
@@ -61,10 +96,7 @@ public class FetchApi {
                 }
                 List<Category> list = new ArrayList<>();
                 for (CategoryClient item : response.body().getGenres()) {
-                    CategoryHelper.create(item.getName(), item.getId());
-                    Category category = new Category();
-                    category.setName(item.getName());
-                    category.setId(item.getId());
+                    Category category = CategoryHelper.create(item.getName(), item.getId());
                     list.add(category);
                 }
                 listener.onResponseCategory(list);
@@ -80,7 +112,6 @@ public class FetchApi {
     public void fetchMovieById(final String text) {
         tvSearch = text;
         type = Type.MOVIE_BY_NAME;
-
         Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByName(Config.API_KEY, text);
         call(call, null, text);
 
@@ -144,22 +175,8 @@ public class FetchApi {
 
     private void setList(List<Movie> list, List<MovieClient> response) {
         for (MovieClient m : response) {
-            MovieHelper.create(m.getGenreIds(), m.getPosterPath(), m.isAdult(), m.getOverview(), m.getReleaseDate(), m.getId(), m.getOriginalTitle(), m.getOriginalLanguage(),
+            Movie mov = MovieHelper.create(m.getGenreIds(), m.getPosterPath(), m.isAdult(), m.getOverview(), m.getReleaseDate(), m.getId(), m.getOriginalTitle(), m.getOriginalLanguage(),
                     m.getTitle(), m.getBackdropPath(), m.getPopularity(), m.getVoteCount(), m.getVideo(), m.getVoteAverage());
-            Movie mov = new Movie();
-            mov.setVoteAverage(m.getVoteAverage());
-            mov.setVideo(m.getVideo());
-            mov.setVoteCount(m.getVoteCount());
-            mov.setPopularity(m.getPopularity());
-            mov.setAdult(m.isAdult());
-            mov.setBackdropPath(m.getBackdropPath());
-            mov.setId(m.getId());
-            mov.setOriginalLanguage(m.getOriginalLanguage());
-            mov.setOriginalTitle(m.getOriginalTitle());
-            mov.setOverview(m.getOverview());
-            mov.setTitle(m.getTitle());
-            mov.setReleaseDate(m.getReleaseDate());
-            mov.setPosterPath(m.getPosterPath());
             list.add(mov);
         }
     }

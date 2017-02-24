@@ -7,6 +7,7 @@ import com.stkizema.test8telemarketing.api.FilmApiInterface;
 import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.LinkHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
+import com.stkizema.test8telemarketing.db.VideoHelper;
 import com.stkizema.test8telemarketing.db.model.DaoMaster;
 import com.stkizema.test8telemarketing.db.model.DaoSession;
 
@@ -34,6 +35,7 @@ public class TopApp extends Application {
         MovieHelper.getInstance(this);
         CategoryHelper.getInstance(this);
         LinkHelper.getInstance(this);
+        VideoHelper.getInstance(this);
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(API_BASE_URL)

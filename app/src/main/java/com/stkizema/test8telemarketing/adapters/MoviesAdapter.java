@@ -21,10 +21,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
 
     private List<Movie> list;
     private Context con;
+    private ItemListener itemListener;
 
-    public MoviesAdapter(Context con, List<Movie> list) {
+    public interface ItemListener {
+        void onItemClick(Movie movie);
+    }
+
+    public MoviesAdapter(ItemListener itemListener, Context con, List<Movie> list) {
         this.list = list;
         this.con = con;
+        this.itemListener = itemListener;
     }
 
     public void setList(List<Movie> list) {
@@ -41,7 +47,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
     @Override
     public void onBindViewHolder(ViewHolderMain holder, int position) {
 //        holder.getAdapterPosition();
-        Movie movie = list.get(position);
+        final Movie movie = list.get(position);
         Ion.with(con)
                 .load(IMG_PATH + movie.getPosterPath())
                 .withBitmap()
@@ -55,6 +61,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
         holder.tvDescription.setText(movie.getOverview());
 
         holder.tvCategories.setText(getCategoriesStr(movie.getId()));
+
+        holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                itemListener.onItemClick(movie);
+            }
+        });
     }
 
 
@@ -76,7 +89,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
                     str = str + category.getName() + ", ";
                 }
             }
-            str = str.substring(0, str.length() - 2);
+            if (str.length() > 2) {
+                str = str.substring(0, str.length() - 2);
+            }
         }
         return str;
     }

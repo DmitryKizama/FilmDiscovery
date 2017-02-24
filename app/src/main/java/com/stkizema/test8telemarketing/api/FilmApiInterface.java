@@ -2,6 +2,7 @@ package com.stkizema.test8telemarketing.api;
 
 import com.stkizema.test8telemarketing.model.CategoryResponse;
 import com.stkizema.test8telemarketing.model.MoviesResponse;
+import com.stkizema.test8telemarketing.model.VideoResponse;
 import com.stkizema.test8telemarketing.util.Config;
 
 import retrofit2.Call;
@@ -25,4 +26,7 @@ public interface FilmApiInterface {
 
     @GET(Config.URL_GET_MOVIE_BY_NAME)
     Call<MoviesResponse> getMoviesByName(@Query("api_key") String api_key, @Query("query") String nameMovie);
+
+    @GET("movie/{id}/videos")
+    Call<VideoResponse> getVideoByMovieId(@Path("id") Integer idMovie, @Query("api_key") String api_key, @Query("language") String language);
 }

@@ -8,4 +8,5 @@ import java.util.List;
 public interface OnResponseListener {
     void onResponseMovies(List<Movie> list, String msg);
     void onResponseCategory(List<Category> list);
+    void onBeginFetch();
 }

@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
 
         tvNoItems = (TextView) findViewById(R.id.tv_no_items);
         fetchApi = new FetchApi(this, this);
-        fetchApi.fetchCategories();
 
         rvVisible(false);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.sw_refresh_layout_main);
@@ -78,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         frameTopLayout.removeAllViews();
         frameTopLayout.addView(view);
         topMainController = new TopMainController(frameTopLayout, this, fetchApi);
+
+        fetchApi.fetchCategories();
 
         KeyboardVisibilityEvent.setEventListener(this, new KeyboardVisibilityEventListener() {
             @Override
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
             rvVisible(false);
             return;
         }
-        if (list.isEmpty()){
+        if (list.isEmpty()) {
             rvVisible(false);
             return;
         }
@@ -121,6 +122,12 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
 
     @Override
     public void onResponseCategory(List<Category> list) {
+        //TODO: MAKE MAIN FETCH
         fetchApi.fetchTopRatedMovies();
+    }
+
+    @Override
+    public void onBeginFetch() {
+        swipeRefreshLayout.setRefreshing(true);
     }
 }

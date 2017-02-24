@@ -26,7 +26,7 @@ public class FetchApi {
     private Context context;
     private OnResponseListener listener;
 
-    private enum Type {TOP_RATED, MOVIE_BY_ID, MOVIE_BY_CATEGORY}
+    private enum Type {TOP_RATED, MOVIE_BY_NAME, MOVIE_BY_CATEGORY}
 
     private Type type;
     private String tvSearch;
@@ -44,13 +44,14 @@ public class FetchApi {
             case MOVIE_BY_CATEGORY:
                 fetchMoviesByCategory(tvSearch);
                 break;
-            case MOVIE_BY_ID:
+            case MOVIE_BY_NAME:
                 fetchMovieById(tvSearch);
                 break;
         }
     }
 
     public void fetchCategories() {
+        listener.onBeginFetch();
         Call<CategoryResponse> call = TopApp.getApiClient().getCategoryFilms(Config.API_KEY, Config.EN_US);
         call.enqueue(new Callback<CategoryResponse>() {
             @Override
@@ -78,59 +79,35 @@ public class FetchApi {
 
     public void fetchMovieById(final String text) {
         tvSearch = text;
-        type = Type.MOVIE_BY_ID;
-        Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByName(Config.API_KEY, text);
-        call.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                if (response.body() == null) {
-                    return;
-                }
-                List<Movie> list = new ArrayList<>();
-                setList(list, response.body().getListMovies());
-                listener.onResponseMovies(list, Config.OK);
-            }
+        type = Type.MOVIE_BY_NAME;
 
-            @Override
-            public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                listener.onResponseMovies(MovieHelper.getMovieByName(text), Config.BAD_REQUEST);
-            }
-        });
+        Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByName(Config.API_KEY, text);
+        call(call, null, text);
 
     }
 
     public void fetchMoviesByCategory(String text) {
         tvSearch = text;
         type = Type.MOVIE_BY_CATEGORY;
-        final Category category = CategoryHelper.getCategoryByName(text);
+        Category category = CategoryHelper.getCategoryByName(text);
         if (category == null) {
             Toast.makeText(context, "We haven`t such category", Toast.LENGTH_SHORT).show();
             return;
         }
         Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByCategory(category.getId(),
                 Config.API_KEY, Config.EN_US, Config.INCLUDE_ADULT, Config.SORT_BY);
-        call.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                if (response.body() == null) {
-                    return;
-                }
-                List<Movie> list = new ArrayList<>();
-                setList(list, response.body().getListMovies());
-                listener.onResponseMovies(list, Config.OK);
-            }
-
-            @Override
-            public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                listener.onResponseMovies(MovieHelper.getMoviesByCategoryId(category.getId()), Config.BAD_REQUEST);
-            }
-        });
+        call(call, category.getId(), null);
     }
 
 
     public void fetchTopRatedMovies() {
         type = Type.TOP_RATED;
         Call<MoviesResponse> call = TopApp.getApiClient().getTopRatedFilms(Config.API_KEY);
+        call(call, null, null);
+    }
+
+    private void call(Call<MoviesResponse> call, final Integer idCategory, final String text) {
+        listener.onBeginFetch();
         call.enqueue(new Callback<MoviesResponse>() {
             @Override
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
@@ -144,7 +121,23 @@ public class FetchApi {
 
             @Override
             public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                listener.onResponseMovies(MovieHelper.getTopRatedListMovies(), Config.BAD_REQUEST);
+                switch (type) {
+                    case TOP_RATED:
+                        listener.onResponseMovies(MovieHelper.getTopRatedListMovies(), Config.BAD_REQUEST);
+                        break;
+                    case MOVIE_BY_CATEGORY:
+                        listener.onResponseMovies(MovieHelper.getMoviesByCategoryId(idCategory), Config.BAD_REQUEST);
+                        break;
+                    case MOVIE_BY_NAME:
+                        List<Movie> listMovie = MovieHelper.getMovieByName(text);
+                        if (listMovie == null) {
+                            Toast.makeText(context, "We haven`t such movie", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        listener.onResponseMovies(listMovie, Config.BAD_REQUEST);
+                        break;
+                }
+
             }
         });
     }

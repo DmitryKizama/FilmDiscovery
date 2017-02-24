@@ -21,7 +21,6 @@ import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.services.FetchApi;
-import com.stkizema.test8telemarketing.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ public class TopMainController {
     private View parent;
     private Context context;
     private AutoCompleteTextView tvAutocomplete;
-    private ImageView btnMenu, btnNextSearch, btnDelete;
+    private ImageView btnMenu, btnNextSearch, btnDelete, btnSearch, imgSearch;
     private boolean searchMovie;
     private ArrayAdapter<String> adapter;
 
@@ -85,9 +84,11 @@ public class TopMainController {
 
     private void onCreate() {
         tvAutocomplete = (AutoCompleteTextView) parent.findViewById(R.id.auto_tv);
-        btnDelete = (ImageView) parent.findViewById(R.id.id_delete);
+        btnDelete = (ImageView) parent.findViewById(R.id.img_delete);
         btnMenu = (ImageView) parent.findViewById(R.id.id_menu);
         btnNextSearch = (ImageView) parent.findViewById(R.id.id_next);
+        btnSearch = (ImageView) parent.findViewById(R.id.id_search);
+        imgSearch = (ImageView) parent.findViewById(R.id.img_search);
         TextView tvHint = (TextView) parent.findViewById(R.id.tv_hint);
 
         adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line);
@@ -98,6 +99,12 @@ public class TopMainController {
         setContent(false);
         btnNextVisibility(true);
 
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search(view);
+            }
+        });
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,20 +121,10 @@ public class TopMainController {
         });
 
         searchMovie = false;
-//        tvAutocomplete.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                tvAutocomplete.setFocusableInTouchMode(true);
-//                return false;
-//            }
-//        });
-
         tvAutocomplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Logger.logd("onClick");
                 if (!searchMovie) {
-                    Logger.logd("false");
                     tvAutocomplete.showDropDown();
                 }
             }
@@ -153,15 +150,7 @@ public class TopMainController {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
-                    String text = tvAutocomplete.getText().toString();
-                    if (searchMovie) {
-                        fetchApi.fetchMovieById(text);
-                    } else {
-                        fetchApi.fetchMoviesByCategory(text);
-                    }
-                    tvAutocomplete.clearFocus();
-                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                    search(textView);
                     return true;
                 }
                 return true;
@@ -169,13 +158,29 @@ public class TopMainController {
         });
     }
 
+    private void search(View textView) {
+        String text = tvAutocomplete.getText().toString();
+        if (searchMovie) {
+            fetchApi.fetchMovieById(text);
+        } else {
+            fetchApi.fetchMoviesByCategory(text);
+        }
+        tvAutocomplete.clearFocus();
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+    }
+
     private void btnNextVisibility(boolean isBtnNextVisible) {
         if (isBtnNextVisible) {
             btnDelete.setVisibility(View.GONE);
             btnNextSearch.setVisibility(View.VISIBLE);
+            imgSearch.setVisibility(View.VISIBLE);
+            btnSearch.setVisibility(View.GONE);
         } else {
             btnDelete.setVisibility(View.VISIBLE);
             btnNextSearch.setVisibility(View.GONE);
+            imgSearch.setVisibility(View.GONE);
+            btnSearch.setVisibility(View.VISIBLE);
         }
     }
 

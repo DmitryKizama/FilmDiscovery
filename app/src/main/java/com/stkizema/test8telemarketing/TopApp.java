@@ -32,6 +32,7 @@ public class TopApp extends Application {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "model", null);
         Database db = helper.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
+
         MovieHelper.getInstance(this);
         CategoryHelper.getInstance(this);
         LinkHelper.getInstance(this);

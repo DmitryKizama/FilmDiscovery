@@ -36,6 +36,7 @@ import static android.view.View.VISIBLE;
 public class MainActivity extends AppCompatActivity implements OnResponseListener, MoviesAdapter.ItemListener {
 
     private static final int COLUMN_NUMBER = 1;
+    private static final int REFRESH_VALUE_PAGE = 1;
 
     private FetchApi fetchApi;
     private RecyclerView rvMain;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
             @Override
             public void onRefresh() {
                 if (fetchApi != null) {
-                    fetchApi.refresh();
+                    fetchApi.refresh(REFRESH_VALUE_PAGE);
                 }
             }
         });
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     @Override
     public void onResponseCategory(List<Category> list) {
         //TODO: MAKE MAIN FETCH
-        fetchApi.fetchTopRatedMovies();
+        fetchApi.fetchTopRatedMovies(REFRESH_VALUE_PAGE);
     }
 
     @Override

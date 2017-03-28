@@ -14,15 +14,14 @@ public interface FilmApiInterface {
 
     //Get top rated movies from server by api_key
     @GET(Config.URL_GET_TOP_MOVIE_RATED)
-    Call<MoviesResponse> getTopRatedFilms(@Query("api_key") String api_key);
+    Call<MoviesResponse> getTopRatedFilms(@Query("api_key") String api_key, @Query("page") String page);
 
     //Get categories from server by api_key
     @GET(Config.URL_GET_CATEGORY)
     Call<CategoryResponse> getCategoryFilms(@Query("api_key") String api_key, @Query("language") String language);
 
-    @GET(Config.URL_GET_MOVIES_BY_CATEGORY)
-    Call<MoviesResponse> getMoviesByCategory(@Path("id") Integer idCategory, @Query("api_key") String api_key, @Query("language") String language,
-                                             @Query("include_adult") String include_adult, @Query("sort_by") String sort);
+    @GET(Config.URL_GET_MOVIES_BY_CATEGORY_DISCOVER)
+    Call<MoviesResponse> getMoviesByCategory(@Query("api_key") String api_key, @Query("sort_by") String sort, @Query("page") String page, @Query("with_genres") Integer idCategory);
 
     @GET(Config.URL_GET_MOVIE_BY_NAME)
     Call<MoviesResponse> getMoviesByName(@Query("api_key") String api_key, @Query("query") String nameMovie);

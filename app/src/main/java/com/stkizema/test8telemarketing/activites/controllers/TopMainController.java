@@ -161,9 +161,9 @@ public class TopMainController {
     private void search(View textView) {
         String text = tvAutocomplete.getText().toString();
         if (searchMovie) {
-            fetchApi.fetchMovieById(text);
+            fetchApi.fetchMovieByName(text, 1);
         } else {
-            fetchApi.fetchMoviesByCategory(text);
+            fetchApi.fetchMoviesByCategory(text, 1);
         }
         tvAutocomplete.clearFocus();
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);

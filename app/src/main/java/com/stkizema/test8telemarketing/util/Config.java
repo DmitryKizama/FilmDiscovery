@@ -8,6 +8,9 @@ public class Config {
     public static final String URL_GET_TOP_MOVIE_RATED = "movie/top_rated";
     public static final String URL_GET_CATEGORY = "genre/movie/list";
     public static final String URL_GET_MOVIES_BY_CATEGORY = "genre/{id}/movies";
+
+    public static final String URL_GET_MOVIES_BY_CATEGORY_DISCOVER = "discover/movie";
+
     public static final String URL_GET_MOVIE_BY_NAME = "search/movie";
     public static final String URL_GET_VIDEO_DETAILS = "movie/{id}/videos";
 
@@ -42,10 +45,10 @@ public class Config {
 
     //List of HTTP status codes
     public static final String OK = "OK";
-    public static final String BAD_REQUEST = "NO NETWORK";
+    public static final String NO_NETWORK = "NO NETWORK";
 
     public static final String API_KEY = TopApp.getContext().getResources().getString(R.string.api_key);
     public static final String EN_US = "en-US";
     public static final String INCLUDE_ADULT = "false";
-    public static final String SORT_BY = "created_at.asc";
+    public static final String SORT_BY = "popularity.asc";
 }

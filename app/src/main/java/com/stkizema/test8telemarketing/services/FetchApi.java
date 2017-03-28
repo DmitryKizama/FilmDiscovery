@@ -1,6 +1,7 @@
 package com.stkizema.test8telemarketing.services;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import com.stkizema.test8telemarketing.TopApp;
@@ -40,25 +41,22 @@ public class FetchApi {
         this.listener = listener;
     }
 
-    public void refresh() {
+    public void refresh(int page) {
         switch (type) {
             case TOP_RATED:
-                fetchTopRatedMovies();
+                fetchTopRatedMovies(page);
                 break;
             case MOVIE_BY_CATEGORY:
-                fetchMoviesByCategory(tvSearch);
+                fetchMoviesByCategory(tvSearch, page);
                 break;
             case MOVIE_BY_NAME:
-                fetchMovieById(tvSearch);
+                fetchMovieByName(tvSearch, page);
                 break;
         }
     }
 
     public void fetchVideoByMovieId(final Integer id) {
         listener.onBeginFetch();
-        Logger.logd("fetchVideoByMovieId");
-        Logger.logd("id= " + id);
-        Logger.logd("APIKEY = " + Config.API_KEY);
         Call<VideoResponse> call = TopApp.getApiClient().getVideoByMovieId(id, Config.API_KEY, Config.EN_US);
         call.enqueue(new Callback<VideoResponse>() {
             @Override
@@ -109,7 +107,7 @@ public class FetchApi {
         });
     }
 
-    public void fetchMovieById(final String text) {
+    public void fetchMovieByName(final String text, int page) {
         tvSearch = text;
         type = Type.MOVIE_BY_NAME;
         Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByName(Config.API_KEY, text);
@@ -117,7 +115,7 @@ public class FetchApi {
 
     }
 
-    public void fetchMoviesByCategory(String text) {
+    public void fetchMoviesByCategory(String text, int page) {
         tvSearch = text;
         type = Type.MOVIE_BY_CATEGORY;
         Category category = CategoryHelper.getCategoryByName(text);
@@ -125,15 +123,14 @@ public class FetchApi {
             Toast.makeText(context, "We haven`t such category", Toast.LENGTH_SHORT).show();
             return;
         }
-        Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByCategory(category.getId(),
-                Config.API_KEY, Config.EN_US, Config.INCLUDE_ADULT, Config.SORT_BY);
+        Call<MoviesResponse> call = TopApp.getApiClient().getMoviesByCategory(Config.API_KEY, Config.SORT_BY, Integer.toString(page), category.getId());
         call(call, category.getId(), null);
     }
 
 
-    public void fetchTopRatedMovies() {
+    public void fetchTopRatedMovies(int page) {
         type = Type.TOP_RATED;
-        Call<MoviesResponse> call = TopApp.getApiClient().getTopRatedFilms(Config.API_KEY);
+        Call<MoviesResponse> call = TopApp.getApiClient().getTopRatedFilms(Config.API_KEY, Integer.toString(page));
         call(call, null, null);
     }
 
@@ -154,10 +151,10 @@ public class FetchApi {
             public void onFailure(Call<MoviesResponse> call, Throwable t) {
                 switch (type) {
                     case TOP_RATED:
-                        listener.onResponseMovies(MovieHelper.getTopRatedListMovies(), Config.BAD_REQUEST);
+                        listener.onResponseMovies(MovieHelper.getTopRatedListMovies(), Config.NO_NETWORK);
                         break;
                     case MOVIE_BY_CATEGORY:
-                        listener.onResponseMovies(MovieHelper.getMoviesByCategoryId(idCategory), Config.BAD_REQUEST);
+                        listener.onResponseMovies(MovieHelper.getMoviesByCategoryId(idCategory), Config.NO_NETWORK);
                         break;
                     case MOVIE_BY_NAME:
                         List<Movie> listMovie = MovieHelper.getMovieByName(text);
@@ -165,7 +162,7 @@ public class FetchApi {
                             Toast.makeText(context, "We haven`t such movie", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        listener.onResponseMovies(listMovie, Config.BAD_REQUEST);
+                        listener.onResponseMovies(listMovie, Config.NO_NETWORK);
                         break;
                 }
 

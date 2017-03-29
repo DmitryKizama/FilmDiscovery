@@ -48,6 +48,9 @@ public class Config {
     public static final String NO_NETWORK = "NO NETWORK";
 
     public static final String API_KEY = TopApp.getContext().getResources().getString(R.string.api_key);
+
+    public static final String YOU_TUBE_API_KEY = TopApp.getContext().getResources().getString(R.string.api_key_you_tube);
+
     public static final String EN_US = "en-US";
     public static final String INCLUDE_ADULT = "false";
     public static final String SORT_BY = "popularity.asc";

@@ -5,6 +5,8 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 
+import java.io.Serializable;
+
 @Entity(
         indexes = {
                 @Index(value = "idVideo", unique = true)

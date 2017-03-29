@@ -10,6 +10,7 @@ import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.VideoHelper;
 import com.stkizema.test8telemarketing.db.model.DaoMaster;
 import com.stkizema.test8telemarketing.db.model.DaoSession;
+import com.stkizema.test8telemarketing.util.UiHelper;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -28,6 +29,8 @@ public class TopApp extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
+
+        UiHelper.init(context);
 
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "model", null);
         Database db = helper.getWritableDb();

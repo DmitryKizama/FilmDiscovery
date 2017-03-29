@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.activites.controllers.TopMainController;
-import com.stkizema.test8telemarketing.activites.dialogs.MovieDialog;
 import com.stkizema.test8telemarketing.adapters.MoviesAdapter;
 import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.Movie;
@@ -28,6 +27,7 @@ import com.stkizema.test8telemarketing.util.Logger;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.GONE;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.savedInstanceState = savedInstanceState;
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_activity);
 
         rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         rvMain = (RecyclerView) findViewById(R.id.rv_main);
@@ -137,8 +137,13 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
             Toast.makeText(this, "Downloading error", Toast.LENGTH_SHORT).show();
             return;
         }
-        MovieDialog movieDialog = new MovieDialog(list, this);
-        movieDialog.show();
+        ArrayList<String> listThreilers = new ArrayList<>();
+        for (Video video: list){
+            if(video.getSite().equals("YouTube")){
+                listThreilers.add(video.getKey());
+            }
+        }
+        startActivity(MovieActivity.getLaunchingIntent(this, listThreilers));
     }
 
     @Override

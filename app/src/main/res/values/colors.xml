@@ -5,4 +5,6 @@
     <color name="colorAccent">@android:color/black</color>
     <color name="background">@android:color/white</color>
 
+    <color name="shadow">#555555</color>
+    <color name="title">#777777</color>
 </resources>

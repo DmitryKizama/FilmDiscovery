@@ -1,6 +1,7 @@
 package com.stkizema.test8telemarketing.activites.controllers;
 
 import android.content.Context;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -148,7 +149,7 @@ public class TopMainController {
 
         tvAutocomplete.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            public boolean onEditorAction(final TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     search(textView);
                     return true;

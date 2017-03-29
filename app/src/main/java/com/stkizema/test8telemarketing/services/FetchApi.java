@@ -1,7 +1,7 @@
 package com.stkizema.test8telemarketing.services;
 
 import android.content.Context;
-import android.content.Intent;
+import android.os.Handler;
 import android.widget.Toast;
 
 import com.stkizema.test8telemarketing.TopApp;
@@ -28,6 +28,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FetchApi {
+
+    private static final int ZERO_PAGE = 0;
+
     private Context context;
     private OnResponseListener listener;
 
@@ -72,13 +75,13 @@ public class FetchApi {
                             item.getKey(), item.getName(), item.getSite(), item.getSize(), item.getType());
                     list.add(video);
                 }
-                listener.onResponseVideo(list);
+                listener.onResponseVideo(list, id);
             }
 
             @Override
             public void onFailure(Call<VideoResponse> call, Throwable t) {
                 Logger.logd("fail");
-                listener.onResponseVideo(VideoHelper.getVideosByMovieId(id));
+                listener.onResponseVideo(VideoHelper.getVideosByMovieId(id), id);
             }
         });
     }
@@ -134,40 +137,47 @@ public class FetchApi {
         call(call, null, null);
     }
 
-    private void call(Call<MoviesResponse> call, final Integer idCategory, final String text) {
+    private void call(final Call<MoviesResponse> call, final Integer idCategory, final String text) {
         listener.onBeginFetch();
-        call.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                if (response.body() == null) {
-                    return;
-                }
-                List<Movie> list = new ArrayList<>();
-                setList(list, response.body().getListMovies());
-                listener.onResponseMovies(list, Config.OK);
-            }
 
+        (new Handler()).postDelayed(new Runnable() {
             @Override
-            public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                switch (type) {
-                    case TOP_RATED:
-                        listener.onResponseMovies(MovieHelper.getTopRatedListMovies(), Config.NO_NETWORK);
-                        break;
-                    case MOVIE_BY_CATEGORY:
-                        listener.onResponseMovies(MovieHelper.getMoviesByCategoryId(idCategory), Config.NO_NETWORK);
-                        break;
-                    case MOVIE_BY_NAME:
-                        List<Movie> listMovie = MovieHelper.getMovieByName(text);
-                        if (listMovie == null) {
-                            Toast.makeText(context, "We haven`t such movie", Toast.LENGTH_SHORT).show();
+            public void run() {
+                call.enqueue(new Callback<MoviesResponse>() {
+                    @Override
+                    public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                        if (response.body() == null) {
                             return;
                         }
-                        listener.onResponseMovies(listMovie, Config.NO_NETWORK);
-                        break;
-                }
+                        List<Movie> list = new ArrayList<>();
+                        setList(list, response.body().getListMovies());
+                        listener.onResponseMovies(list, Config.OK, response.body().getTotalPages(), response.body().getPage());
+                    }
+
+                    @Override
+                    public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                        switch (type) {
+                            case TOP_RATED:
+                                listener.onResponseMovies(MovieHelper.getTopRatedListMovies(), Config.NO_NETWORK, ZERO_PAGE, ZERO_PAGE);
+                                break;
+                            case MOVIE_BY_CATEGORY:
+                                listener.onResponseMovies(MovieHelper.getMoviesByCategoryId(idCategory), Config.NO_NETWORK, ZERO_PAGE, ZERO_PAGE);
+                                break;
+                            case MOVIE_BY_NAME:
+                                List<Movie> listMovie = MovieHelper.getMovieByName(text);
+                                if (listMovie == null) {
+                                    Toast.makeText(context, "We haven`t such movie", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                listener.onResponseMovies(listMovie, Config.NO_NETWORK, ZERO_PAGE, ZERO_PAGE);
+                                break;
+                        }
+
+                    }
+                });
 
             }
-        });
+        }, 1000);
     }
 
     private void setList(List<Movie> list, List<MovieClient> response) {

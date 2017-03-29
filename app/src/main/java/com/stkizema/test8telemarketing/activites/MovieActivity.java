@@ -3,12 +3,14 @@ package com.stkizema.test8telemarketing.activites;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
@@ -18,7 +20,6 @@ import com.google.android.youtube.player.YouTubePlayerView;
 import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.db.model.Video;
 import com.stkizema.test8telemarketing.util.Config;
-import com.stkizema.test8telemarketing.util.Logger;
 import com.stkizema.test8telemarketing.util.UiHelper;
 
 import java.util.ArrayList;
@@ -27,7 +28,8 @@ import java.util.List;
 public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
     private static int NUM_THREILERS;
-    private static String INTENT_EXTRA_TITLE = "EXTRAS";
+    private static String INTENT_EXTRA_LIST = "EXTRAS";
+    private static String INTENT_EXTRA_ID_MOVIE = "EXTRAS_ID";
     private static final int RECOVERY_REQUEST = 1;
 
     private float x1, x2;
@@ -35,16 +37,20 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
 
     private List<Video> list;
     private ArrayList<String> idMovies = null;
+    private Integer movieId = null;
     private YouTubePlayerView youTubeView;
     private int showVideoId;
     private YouTubePlayer youTubePlayer;
     private LinearLayout ll_counter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView tvNoTrailers;
     private Animation scaleGrow;
     private Animation scaleReduce;
 
-    public static Intent getLaunchingIntent(Context ctx, ArrayList<String> list) {
+    public static Intent getLaunchingIntent(Context ctx, ArrayList<String> list, Integer movieId) {
         Intent i = new Intent(ctx, MovieActivity.class);
-        i.putStringArrayListExtra(INTENT_EXTRA_TITLE, list);
+        i.putExtra(INTENT_EXTRA_ID_MOVIE, movieId);
+        i.putStringArrayListExtra(INTENT_EXTRA_LIST, list);
         return i;
     }
 
@@ -59,48 +65,67 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
 
         ll_counter = (LinearLayout) findViewById(R.id.ll_round_counters);
 
+        tvNoTrailers = (TextView) findViewById(R.id.tv_no_trailers);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.sw_refresh_layout_movie);
+        swipeRefreshLayout.setEnabled(false);
+        swipeRefreshLayout.setRefreshing(true);
+
         scaleGrow = AnimationUtils.loadAnimation(this, R.anim.scale_grow);
         scaleReduce = AnimationUtils.loadAnimation(this, R.anim.scale_reduce);
 
-        if (getIntent().hasExtra(INTENT_EXTRA_TITLE)) {
-            idMovies = getIntent().getStringArrayListExtra(INTENT_EXTRA_TITLE);
+        youTubeView.setVisibility(View.GONE);
+        tvNoTrailers.setVisibility(View.GONE);
+
+        if (getIntent() != null) {
+            idMovies = getIntent().getStringArrayListExtra(INTENT_EXTRA_LIST);
             NUM_THREILERS = idMovies.size();
             if (NUM_THREILERS != 0) {
                 showVideoId = 0;
             }
+            if (getIntent().hasExtra(INTENT_EXTRA_ID_MOVIE)) {
+                movieId = getIntent().getIntExtra(INTENT_EXTRA_ID_MOVIE, 0);
+            }
             addViewsToLlCounters(showVideoId);
+        }
+
+    }
+
+    private void setVisibility(boolean isVideoVisible) {
+        if (isVideoVisible) {
+            youTubeView.setVisibility(View.VISIBLE);
+            tvNoTrailers.setVisibility(View.GONE);
+        } else {
+            youTubeView.setVisibility(View.GONE);
+            tvNoTrailers.setVisibility(View.VISIBLE);
         }
     }
 
-
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-        Logger.logd("MOVIETAGSDWDWDS", "onInitializationSuccess 1");
+        swipeRefreshLayout.setRefreshing(false);
         if (!b) {
-            Logger.logd("MOVIETAGSDWDWDS", "onInitializationSuccess 2");
             if (idMovies != null) {
-                Logger.logd("MOVIETAGSDWDWDS", "onInitializationSuccess 3");
                 if (!idMovies.isEmpty()) {
-                    Logger.logd("MOVIETAGSDWDWDS", "onInitializationSuccess 4");
+                    setVisibility(true);
                     this.youTubePlayer = youTubePlayer;
                     youTubePlayer.cueVideo(idMovies.get(showVideoId));
                 } else {
-                    youTubeView.setVisibility(View.GONE);
+                    setVisibility(false);
                 }
             } else {
-                youTubeView.setVisibility(View.GONE);
+                setVisibility(false);
             }
         }
     }
 
     @Override
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-        Logger.logd("MOVIETAGSDWDWDS", "onInitializationFailure 1");
+        swipeRefreshLayout.setRefreshing(false);
+        setVisibility(false);
         if (youTubeInitializationResult.isUserRecoverableError()) {
-            Logger.logd("MOVIETAGSDWDWDS", "onInitializationFailure if");
             youTubeInitializationResult.getErrorDialog(this, RECOVERY_REQUEST).show();
         } else {
-            Logger.logd("MOVIETAGSDWDWDS", "onInitializationFailure else");
             String error = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
             Toast.makeText(this, error, Toast.LENGTH_LONG).show();
         }
@@ -128,13 +153,13 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
                     // Left to Right swipe action
                     if (x2 > x1) {
 //                        Toast.makeText(this, "Left to Right swipe [Previous]", Toast.LENGTH_SHORT).show();
-                        nextPreviousTrailer(false);
+                        nextTrailer(false);
                     }
 
                     // Right to left swipe action
                     else {
 //                        Toast.makeText(this, "Right to Left swipe [Next]", Toast.LENGTH_SHORT).show();
-                        nextPreviousTrailer(true);
+                        nextTrailer(true);
                     }
 
                 } else {
@@ -145,14 +170,14 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
         return super.onTouchEvent(event);
     }
 
-    private void nextPreviousTrailer(boolean next) {
+    private void nextTrailer(boolean next) {
         if (NUM_THREILERS == 0) {
-            Toast.makeText(this, "No any trailers", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "No any trailers", Toast.LENGTH_SHORT).show();
             return;
         }
         if (next) {
             if (showVideoId == NUM_THREILERS - 1) {
-                Toast.makeText(this, "Last one", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "Last one", Toast.LENGTH_SHORT).show();
                 return;
             }
             setLlCountersPrevious(showVideoId);
@@ -160,7 +185,7 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
             youTubePlayer.cueVideo(idMovies.get(showVideoId));
         } else {
             if (showVideoId == 0) {
-                Toast.makeText(this, "First one", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "First one", Toast.LENGTH_SHORT).show();
                 return;
             }
             setLlCountersPrevious(showVideoId);

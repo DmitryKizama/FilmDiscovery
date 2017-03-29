@@ -13,6 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.activites.controllers.TopMainController;
 import com.stkizema.test8telemarketing.adapters.MoviesAdapter;
@@ -36,7 +38,8 @@ import static android.view.View.VISIBLE;
 public class MainActivity extends AppCompatActivity implements OnResponseListener, MoviesAdapter.ItemListener {
 
     private static final int COLUMN_NUMBER = 1;
-    private static final int REFRESH_VALUE_PAGE = 1;
+    private static int REFRESH_VALUE_PAGE = 1;
+    private int totalPages;
 
     private FetchApi fetchApi;
     private RecyclerView rvMain;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     private TopMainController topMainController;
     private FrameLayout frameTopLayout;
     private RelativeLayout rootLayout;
+    private SwipyRefreshLayout swipyRefreshLayout;
 
     private Bundle savedInstanceState;
 
@@ -57,27 +61,51 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
 
         rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         rvMain = (RecyclerView) findViewById(R.id.rv_main);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.sw_refresh_layout_main);
+        swipyRefreshLayout = (SwipyRefreshLayout) findViewById(R.id.swipyrefreshlayout);
+
+        frameTopLayout = (FrameLayout) findViewById(R.id.frame_main);
+
         moviesAdapter = new MoviesAdapter(this, this, null);
         rvMain.setHasFixedSize(true);
         rvMain.setAdapter(moviesAdapter);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, COLUMN_NUMBER, LinearLayoutManager.VERTICAL, false);
+
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, COLUMN_NUMBER, LinearLayoutManager.VERTICAL, false);
         rvMain.setLayoutManager(gridLayoutManager);
 
         tvNoItems = (TextView) findViewById(R.id.tv_no_items);
         fetchApi = new FetchApi(this, this);
 
         rvVisible(false);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.sw_refresh_layout_main);
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if (fetchApi != null) {
-                    fetchApi.refresh(REFRESH_VALUE_PAGE);
+                    fetchApi.refresh(1);
                 }
             }
         });
-        frameTopLayout = (FrameLayout) findViewById(R.id.frame_main);
+
+        swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh(SwipyRefreshLayoutDirection direction) {
+                if (direction == SwipyRefreshLayoutDirection.BOTTOM) {
+                    if (REFRESH_VALUE_PAGE <= totalPages) {
+                        fetchApi.refresh(++REFRESH_VALUE_PAGE);
+                    } else {
+                        swipyRefreshLayout.setRefreshing(false);
+                    }
+                } else {
+                    //NEVER CALLED
+                    Logger.logd("WATAFUCKA", "TOP");
+                }
+            }
+        });
+
         View view = LayoutInflater.from(this).inflate(R.layout.layout_top_controller, frameTopLayout, false);
+
         frameTopLayout.removeAllViews();
         frameTopLayout.addView(view);
         topMainController = new TopMainController(frameTopLayout, this, fetchApi);
@@ -96,6 +124,12 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         });
     }
 
+    @Override
+    protected void onPause() {
+        REFRESH_VALUE_PAGE = 1;
+        super.onPause();
+    }
+
     private void rvVisible(boolean rvVisible) {
         if (rvVisible) {
             tvNoItems.setVisibility(GONE);
@@ -107,8 +141,8 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     }
 
     @Override
-    public void onResponseMovies(List<Movie> list, String msg) {
-        swipeRefreshLayout.setRefreshing(false);
+    public void onResponseMovies(List<Movie> list, String msg, int totalPages, int currentPage) {
+        stopRefreshing();
         if (list == null) {
             rvVisible(false);
             return;
@@ -120,8 +154,13 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         if (!msg.equals(Config.OK)) {
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         }
+        this.totalPages = totalPages;
         rvVisible(true);
-        moviesAdapter.setList(list);
+        if (currentPage <= 1) {
+            moviesAdapter.setList(list);
+        } else {
+            moviesAdapter.addList(list);
+        }
     }
 
     @Override
@@ -131,30 +170,37 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     }
 
     @Override
-    public void onResponseVideo(List<Video> list) {
-        swipeRefreshLayout.setRefreshing(false);
+    public void onResponseVideo(List<Video> list, Integer movieId) {
+        stopRefreshing();
         if (list == null) {
             Toast.makeText(this, "Downloading error", Toast.LENGTH_SHORT).show();
             return;
         }
         ArrayList<String> listThreilers = new ArrayList<>();
-        for (Video video: list){
-            if(video.getSite().equals("YouTube")){
+        for (Video video : list) {
+            if (video.getSite().equals("YouTube")) {
                 listThreilers.add(video.getKey());
             }
         }
-        startActivity(MovieActivity.getLaunchingIntent(this, listThreilers));
+        startActivity(MovieActivity.getLaunchingIntent(this, listThreilers, movieId));
     }
 
     @Override
     public void onBeginFetch() {
         //TODO: DISABLE SCREEN
-        swipeRefreshLayout.setRefreshing(true);
+        if (!swipyRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
     }
 
     @Override
     public void onItemClick(Movie movie) {
         Logger.logd("movie id = " + movie.getId());
         fetchApi.fetchVideoByMovieId(movie.getId());
+    }
+
+    private void stopRefreshing() {
+        swipeRefreshLayout.setRefreshing(false);
+        swipyRefreshLayout.setRefreshing(false);
     }
 }

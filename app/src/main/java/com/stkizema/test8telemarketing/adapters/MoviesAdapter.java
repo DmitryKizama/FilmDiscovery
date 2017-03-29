@@ -33,6 +33,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
         this.itemListener = itemListener;
     }
 
+    public void addList(List<Movie> newlist) {
+        int pos = list.size();
+        list.addAll(pos, newlist);
+        notifyItemRangeInserted(pos, list.size());
+    }
+
     public void setList(List<Movie> list) {
         this.list = list;
         notifyDataSetChanged();

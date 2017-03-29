@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -29,12 +30,21 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_main"
+            <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+                android:id="@+id/swipyrefreshlayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:srl_direction="both">
 
-                android:background="@color/background" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:background="@color/background" />
+
+            </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
             <TextView
                 android:id="@+id/tv_no_items"

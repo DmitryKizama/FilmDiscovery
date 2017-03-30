@@ -1,7 +1,7 @@
-package com.stkizema.test8telemarketing.activites.controllers;
+package com.stkizema.test8telemarketing.activities.controllers;
 
 import android.content.Context;
-import android.os.Handler;
+import android.content.res.Configuration;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -51,8 +51,6 @@ public class TopMainController {
     }
 
     public void keyboardClose() {
-//        tvAutocomplete.setFocusable(false);
-//        tvAutocomplete.setFocusableInTouchMode(false);
     }
 
     private void setContent(boolean isMovie) {
@@ -79,8 +77,6 @@ public class TopMainController {
             adapter.addAll(listCategories);
         }
         adapter.notifyDataSetChanged();
-//        adapter.notifyDataSetInvalidated();
-
     }
 
     private void onCreate() {
@@ -194,6 +190,10 @@ public class TopMainController {
         setContent(searchMovie);
 
         hintHelper.runHintAnimation();
+    }
+
+    public void onConfigurationChanged(Configuration newConfig){
+
     }
 
     private class HintHelper {

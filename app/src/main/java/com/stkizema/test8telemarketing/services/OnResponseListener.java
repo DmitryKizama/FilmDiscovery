@@ -7,11 +7,5 @@ import com.stkizema.test8telemarketing.db.model.Video;
 import java.util.List;
 
 public interface OnResponseListener {
-    void onResponseMovies(List<Movie> list, String msg, int totalPages, int currentPage);
-
-    void onResponseCategory(List<Category> list);
-
     void onBeginFetch();
-
-    void onResponseVideo(List<Video> list, Integer idMovie);
 }

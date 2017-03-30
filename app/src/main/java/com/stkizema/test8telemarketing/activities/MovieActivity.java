@@ -1,8 +1,9 @@
-package com.stkizema.test8telemarketing.activites;
+package com.stkizema.test8telemarketing.activities;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.MotionEvent;
 import android.view.View;
@@ -61,7 +62,13 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
         setContentView(R.layout.movie_activity);
 
         youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
-        youTubeView.initialize(Config.YOU_TUBE_API_KEY, this);
+
+        (new Handler()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                youTubeView.initialize(Config.YOU_TUBE_API_KEY, MovieActivity.this);
+            }
+        }, 1000);
 
         ll_counter = (LinearLayout) findViewById(R.id.ll_round_counters);
 

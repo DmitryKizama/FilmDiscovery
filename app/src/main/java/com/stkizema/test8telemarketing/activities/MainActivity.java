@@ -1,5 +1,6 @@
-package com.stkizema.test8telemarketing.activites;
+package com.stkizema.test8telemarketing.activities;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,11 +17,14 @@ import android.widget.Toast;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.stkizema.test8telemarketing.R;
-import com.stkizema.test8telemarketing.activites.controllers.TopMainController;
+import com.stkizema.test8telemarketing.activities.controllers.TopMainController;
 import com.stkizema.test8telemarketing.adapters.MoviesAdapter;
 import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.db.model.Video;
+import com.stkizema.test8telemarketing.events.CategoryEvent;
+import com.stkizema.test8telemarketing.events.MovieEvent;
+import com.stkizema.test8telemarketing.events.VideoByMovieIdEvent;
 import com.stkizema.test8telemarketing.services.FetchApi;
 import com.stkizema.test8telemarketing.services.OnResponseListener;
 import com.stkizema.test8telemarketing.util.Config;
@@ -31,6 +35,8 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -125,9 +131,30 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void onPause() {
         REFRESH_VALUE_PAGE = 1;
+        EventBus.getDefault().unregister(this);
         super.onPause();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        topMainController.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onBeginFetch() {
+        //TODO: DISABLE SCREEN
+        if (!swipyRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
     }
 
     private void rvVisible(boolean rvVisible) {
@@ -140,7 +167,18 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         }
     }
 
-    @Override
+    public void onEvent(VideoByMovieIdEvent event) {
+        onResponseVideo(event.getList(), event.getIdMovie());
+    }
+
+    public void onEvent(CategoryEvent event) {
+        onResponseCategory(event.getList());
+    }
+
+    public void onEvent(MovieEvent event) {
+        onResponseMovies(event.getList(), event.getMsg(), event.getTotalPages(), event.getCurrentPage());
+    }
+
     public void onResponseMovies(List<Movie> list, String msg, int totalPages, int currentPage) {
         stopRefreshing();
         if (list == null) {
@@ -163,39 +201,28 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         }
     }
 
-    @Override
     public void onResponseCategory(List<Category> list) {
-        //TODO: MAKE MAIN FETCH
         fetchApi.fetchTopRatedMovies(REFRESH_VALUE_PAGE);
     }
 
-    @Override
     public void onResponseVideo(List<Video> list, Integer movieId) {
         stopRefreshing();
         if (list == null) {
             Toast.makeText(this, "Downloading error", Toast.LENGTH_SHORT).show();
             return;
         }
-        ArrayList<String> listThreilers = new ArrayList<>();
+        ArrayList<String> listTrailers = new ArrayList<>();
         for (Video video : list) {
             if (video.getSite().equals("YouTube")) {
-                listThreilers.add(video.getKey());
+                listTrailers.add(video.getKey());
             }
         }
-        startActivity(MovieActivity.getLaunchingIntent(this, listThreilers, movieId));
+        startActivity(MovieActivity.getLaunchingIntent(this, listTrailers, movieId));
     }
 
-    @Override
-    public void onBeginFetch() {
-        //TODO: DISABLE SCREEN
-        if (!swipyRefreshLayout.isRefreshing()) {
-            swipeRefreshLayout.setRefreshing(true);
-        }
-    }
 
     @Override
     public void onItemClick(Movie movie) {
-        Logger.logd("movie id = " + movie.getId());
         fetchApi.fetchVideoByMovieId(movie.getId());
     }
 

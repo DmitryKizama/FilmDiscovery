@@ -32,6 +32,7 @@ dependencies {
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.github.orangegangsters:swipy:1.2.3@aar'
+    compile 'de.greenrobot:eventbus:2.4.0'
     compile 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:2.0.1'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
 }

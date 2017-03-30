@@ -148,6 +148,9 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (youTubePlayer == null){
+            return super.onTouchEvent(event);
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x1 = event.getX();

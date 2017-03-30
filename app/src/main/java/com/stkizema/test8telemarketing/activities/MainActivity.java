@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,11 +50,10 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     private RecyclerView rvMain;
     private TextView tvNoItems;
     private MoviesAdapter moviesAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private TopMainController topMainController;
     private FrameLayout frameTopLayout;
-    private RelativeLayout rootLayout;
     private SwipyRefreshLayout swipyRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private Bundle savedInstanceState;
 
@@ -65,11 +63,11 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         this.savedInstanceState = savedInstanceState;
         setContentView(R.layout.main_activity);
 
-        rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         rvMain = (RecyclerView) findViewById(R.id.rv_main);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.sw_refresh_layout_main);
         swipyRefreshLayout = (SwipyRefreshLayout) findViewById(R.id.swipyrefreshlayout);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.progress_bar_swipe);
 
         frameTopLayout = (FrameLayout) findViewById(R.id.frame_main);
 
@@ -83,8 +81,10 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         tvNoItems = (TextView) findViewById(R.id.tv_no_items);
         fetchApi = new FetchApi(this, this);
 
-        rvVisible(false);
+        rvVisible(true);
 
+        swipeRefreshLayout.setEnabled(false);
+        swipeRefreshLayout.setRefreshing(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -97,14 +97,19 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh(SwipyRefreshLayoutDirection direction) {
+                Logger.logd("BOOLSHITTAG", "onRefresh");
                 if (direction == SwipyRefreshLayoutDirection.BOTTOM) {
                     if (REFRESH_VALUE_PAGE <= totalPages) {
-                        fetchApi.refresh(++REFRESH_VALUE_PAGE);
+                        if (fetchApi != null) {
+                            fetchApi.refresh(++REFRESH_VALUE_PAGE);
+                        }
                     } else {
                         swipyRefreshLayout.setRefreshing(false);
                     }
                 } else {
-                    //NEVER CALLED
+                    if (fetchApi != null) {
+                        fetchApi.refresh(1);
+                    }
                     Logger.logd("WATAFUCKA", "TOP");
                 }
             }
@@ -152,18 +157,24 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     @Override
     public void onBeginFetch() {
         //TODO: DISABLE SCREEN
-        if (!swipyRefreshLayout.isRefreshing()) {
+        Logger.logd("BOOLSHITTAG", "onBeginFetch");
+        if (swipeRefreshLayout.isEnabled()){
             swipeRefreshLayout.setRefreshing(true);
         }
+        swipyRefreshLayout.setRefreshing(true);
     }
 
     private void rvVisible(boolean rvVisible) {
         if (rvVisible) {
             tvNoItems.setVisibility(GONE);
             rvMain.setVisibility(VISIBLE);
+            swipyRefreshLayout.setVisibility(VISIBLE);
+            swipeRefreshLayout.setEnabled(false);
         } else {
             tvNoItems.setVisibility(VISIBLE);
             rvMain.setVisibility(GONE);
+            swipyRefreshLayout.setVisibility(GONE);
+            swipeRefreshLayout.setEnabled(true);
         }
     }
 
@@ -180,7 +191,10 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     }
 
     public void onResponseMovies(List<Movie> list, String msg, int totalPages, int currentPage) {
-        stopRefreshing();
+        swipyRefreshLayout.setRefreshing(false);
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
         if (list == null) {
             rvVisible(false);
             return;
@@ -206,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     }
 
     public void onResponseVideo(List<Video> list, Integer movieId) {
-        stopRefreshing();
+        swipyRefreshLayout.setRefreshing(false);
         if (list == null) {
             Toast.makeText(this, "Downloading error", Toast.LENGTH_SHORT).show();
             return;
@@ -226,8 +240,4 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         fetchApi.fetchVideoByMovieId(movie.getId());
     }
 
-    private void stopRefreshing() {
-        swipeRefreshLayout.setRefreshing(false);
-        swipyRefreshLayout.setRefreshing(false);
-    }
 }

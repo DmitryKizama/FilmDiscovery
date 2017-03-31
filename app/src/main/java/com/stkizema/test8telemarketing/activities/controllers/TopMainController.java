@@ -11,17 +11,18 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.stkizema.test8telemarketing.R;
+import com.stkizema.test8telemarketing.adapters.DropDawnArrayAdapter;
 import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.Movie;
 import com.stkizema.test8telemarketing.services.FetchApi;
+import com.stkizema.test8telemarketing.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class TopMainController {
     private AutoCompleteTextView tvAutocomplete;
     private ImageView btnMenu, btnNextSearch, btnDelete, btnSearch, imgSearch;
     private boolean searchMovie;
-    private ArrayAdapter<String> adapter;
+    private DropDawnArrayAdapter adapter;
 
     private HintHelper hintHelper;
     private FetchApi fetchApi;
@@ -53,30 +54,41 @@ public class TopMainController {
     public void keyboardClose() {
     }
 
-    private void setContent(boolean isMovie) {
-        List<Movie> listMov = MovieHelper.getTopRatedListMovies();
-        List<Category> listCat = CategoryHelper.getAllCategory();
-        if (listMov == null || listCat == null) {
-            return;
-        }
+    private void setContent(boolean isMovie, String str) {
+        List<Movie> listMov;
+        List<Category> listCat;
+        if (isMovie){
+            if(str == null) {
+                listMov = MovieHelper.getAllMovies();
+            } else {
+                listMov = MovieHelper.getMoviesByString(str);
+            }
+            if (listMov == null){
+                return;
+            }
+            ArrayList<String> listMovies = new ArrayList<>();
+            for (Movie movie : listMov) {
+                listMovies.add(movie.getTitle());
+            }
+            adapter.updateList(listMovies);
 
-        List<String> listMovies = new ArrayList<>();
-        for (Movie movie : listMov) {
-            listMovies.add(movie.getTitle());
-        }
-
-        List<String> listCategories = new ArrayList<>();
-        for (Category cat : listCat) {
-            listCategories.add(cat.getName());
-        }
-
-        adapter.clear();
-        if (isMovie) {
-            adapter.addAll(listMovies);
         } else {
-            adapter.addAll(listCategories);
+
+            if(str == null){
+                listCat = CategoryHelper.getAllCategory();
+            } else {
+                listCat = CategoryHelper.getCategoriesByString(str);
+            }
+            if (listCat == null){
+                return;
+            }
+            ArrayList<String> listCategories = new ArrayList<>();
+            for (Category cat : listCat) {
+                listCategories.add(cat.getName());
+            }
+            adapter.updateList(listCategories);
+
         }
-        adapter.notifyDataSetChanged();
     }
 
     private void onCreate() {
@@ -88,12 +100,14 @@ public class TopMainController {
         imgSearch = (ImageView) parent.findViewById(R.id.img_search);
         TextView tvHint = (TextView) parent.findViewById(R.id.tv_hint);
 
-        adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line);
+        adapter = new DropDawnArrayAdapter(context);
         tvAutocomplete.setAdapter(adapter);
 
         hintHelper = new HintHelper(tvHint);
 
-        setContent(false);
+        searchMovie = false;
+
+        setContent(searchMovie, null);
         btnNextVisibility(true);
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +131,6 @@ public class TopMainController {
             }
         });
 
-        searchMovie = false;
         tvAutocomplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,8 +147,10 @@ public class TopMainController {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                hintHelper.setHintVisibility(tvAutocomplete.getText().toString().length() > 0);
-                btnNextVisibility(!(tvAutocomplete.getText().toString().length() > 0));
+                String text = charSequence.toString();
+                btnNextVisibility(!(text.length() > 0));
+                Logger.logd("SDDWDWDWDWDWD", "text = " + text);
+                setContent(searchMovie, text);
             }
 
             @Override
@@ -169,11 +184,13 @@ public class TopMainController {
 
     private void btnNextVisibility(boolean isBtnNextVisible) {
         if (isBtnNextVisible) {
+            hintHelper.setHintVisibility(false);
             btnDelete.setVisibility(View.GONE);
             btnNextSearch.setVisibility(View.VISIBLE);
             imgSearch.setVisibility(View.VISIBLE);
             btnSearch.setVisibility(View.GONE);
         } else {
+            hintHelper.setHintVisibility(true);
             btnDelete.setVisibility(View.VISIBLE);
             btnNextSearch.setVisibility(View.GONE);
             imgSearch.setVisibility(View.GONE);
@@ -187,12 +204,12 @@ public class TopMainController {
         }
 
         searchMovie = !searchMovie;
-        setContent(searchMovie);
+        setContent(searchMovie, null);
 
         hintHelper.runHintAnimation();
     }
 
-    public void onConfigurationChanged(Configuration newConfig){
+    public void onConfigurationChanged(Configuration newConfig) {
 
     }
 

@@ -34,6 +34,7 @@ import retrofit2.Response;
 public class FetchApi {
 
     private static final int ZERO_PAGE = 0;
+    private static final int POST_DELAY = 100;
 
     private Context context;
     private OnResponseListener listener;
@@ -63,7 +64,6 @@ public class FetchApi {
     }
 
     public void fetchVideoByMovieId(final Integer id) {
-        listener.onBeginFetch();
         final Call<VideoResponse> call = TopApp.getApiClient().getVideoByMovieId(id, Config.API_KEY, Config.EN_US);
 
         (new Handler()).postDelayed(new Runnable() {
@@ -95,7 +95,7 @@ public class FetchApi {
                     }
                 });
             }
-        }, 1000);
+        }, POST_DELAY);
     }
 
     public void fetchCategories() {
@@ -125,7 +125,7 @@ public class FetchApi {
                     }
                 });
             }
-        }, 1000);
+        }, POST_DELAY);
     }
 
     public void fetchMovieByName(final String text, int page) {
@@ -177,7 +177,7 @@ public class FetchApi {
                     public void onFailure(Call<MoviesResponse> call, Throwable t) {
                         switch (type) {
                             case TOP_RATED:
-                                EventBus.getDefault().post(new MovieEvent(MovieHelper.getTopRatedListMovies(), Config.NO_NETWORK, ZERO_PAGE, ZERO_PAGE));
+                                EventBus.getDefault().post(new MovieEvent(MovieHelper.getAllMovies(), Config.NO_NETWORK, ZERO_PAGE, ZERO_PAGE));
                                 break;
                             case MOVIE_BY_CATEGORY:
                                 EventBus.getDefault().post(new MovieEvent(MovieHelper.getMoviesByCategoryId(idCategory), Config.NO_NETWORK, ZERO_PAGE, ZERO_PAGE));
@@ -196,7 +196,7 @@ public class FetchApi {
                 });
 
             }
-        }, 1000);
+        }, POST_DELAY);
     }
 
     private void setList(List<Movie> list, List<MovieClient> response) {

@@ -9,6 +9,7 @@ import com.stkizema.test8telemarketing.db.model.MovieDao;
 
 import org.greenrobot.greendao.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieHelper {
@@ -47,6 +48,21 @@ public class MovieHelper {
         return movie;
     }
 
+    public static List<Movie> getMoviesByString(String str) {
+        Query<Movie> query = getMovieDao().queryBuilder().orderAsc(MovieDao.Properties.IdMovie).build();
+        List<Movie> list = query.list();
+        if (list.isEmpty()) {
+            return null;
+        }
+        List<Movie> resultList = new ArrayList<>();
+        for (Movie movie : list) {
+            if (movie.getTitle().toLowerCase().startsWith(str.toLowerCase())) {
+                resultList.add(movie);
+            }
+        }
+        return resultList;
+    }
+
     public static Movie getMovieById(Integer id) {
         Query<Movie> query = getMovieDao().queryBuilder().where(MovieDao.Properties.Id.eq(id)).build();
         if (query.list().isEmpty()) {
@@ -63,7 +79,7 @@ public class MovieHelper {
         return query.list();
     }
 
-    public static List<Movie> getTopRatedListMovies() {
+    public static List<Movie> getAllMovies() {
         Query<Movie> query = getMovieDao().queryBuilder().orderAsc(MovieDao.Properties.IdMovie).build();
         if (query.list().isEmpty()) {
             return null;

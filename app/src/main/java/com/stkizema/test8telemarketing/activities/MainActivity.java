@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     }
 
     public void onResponseVideo(List<Video> list, Integer movieId) {
+        swipeRefreshLayout.setRefreshing(false);
         swipyRefreshLayout.setRefreshing(false);
         if (list == null) {
             Toast.makeText(this, "Downloading error", Toast.LENGTH_SHORT).show();
@@ -237,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
 
     @Override
     public void onItemClick(Movie movie) {
+        swipeRefreshLayout.setRefreshing(true);
         fetchApi.fetchVideoByMovieId(movie.getId());
     }
 

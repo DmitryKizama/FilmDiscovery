@@ -6,9 +6,11 @@ import com.stkizema.test8telemarketing.TopApp;
 import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.CategoryDao;
 import com.stkizema.test8telemarketing.db.model.DaoSession;
+import com.stkizema.test8telemarketing.db.model.Movie;
 
 import org.greenrobot.greendao.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryHelper {
@@ -39,6 +41,21 @@ public class CategoryHelper {
         category.setName(name);
         getCategoryDao().insert(category);
         return category;
+    }
+
+    public static List<Category> getCategoriesByString(String str) {
+        Query<Category> query = getCategoryDao().queryBuilder().orderAsc(CategoryDao.Properties.IdCategory).build();
+        List<Category> list = query.list();
+        if (list.isEmpty()) {
+            return null;
+        }
+        List<Category> resultList = new ArrayList<>();
+        for (Category cat : list) {
+            if (cat.getName().toLowerCase().startsWith(str.toLowerCase())) {
+                resultList.add(cat);
+            }
+        }
+        return resultList;
     }
 
     public static Category getCategoryById(Integer id) {

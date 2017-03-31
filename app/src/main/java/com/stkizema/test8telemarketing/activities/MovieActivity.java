@@ -21,6 +21,7 @@ import com.google.android.youtube.player.YouTubePlayerView;
 import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.db.model.Video;
 import com.stkizema.test8telemarketing.util.Config;
+import com.stkizema.test8telemarketing.util.Logger;
 import com.stkizema.test8telemarketing.util.UiHelper;
 
 import java.util.ArrayList;
@@ -55,7 +56,6 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
         return i;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +70,16 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
             }
         }, 1000);
 
+        View v = youTubeView;
+        v.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Logger.logd("EDWDWWEWEWE", "onTouch");
+                onTouchEvent(motionEvent);
+                return false;
+            }
+        });
+
         ll_counter = (LinearLayout) findViewById(R.id.ll_round_counters);
 
         tvNoTrailers = (TextView) findViewById(R.id.tv_no_trailers);
@@ -83,6 +93,7 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
 
         youTubeView.setVisibility(View.GONE);
         tvNoTrailers.setVisibility(View.GONE);
+        ll_counter.setVisibility(View.GONE);
 
         if (getIntent() != null) {
             idMovies = getIntent().getStringArrayListExtra(INTENT_EXTRA_LIST);
@@ -100,9 +111,11 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
 
     private void setVisibility(boolean isVideoVisible) {
         if (isVideoVisible) {
+            ll_counter.setVisibility(View.VISIBLE);
             youTubeView.setVisibility(View.VISIBLE);
             tvNoTrailers.setVisibility(View.GONE);
         } else {
+            ll_counter.setVisibility(View.GONE);
             youTubeView.setVisibility(View.GONE);
             tvNoTrailers.setVisibility(View.VISIBLE);
         }
@@ -148,7 +161,7 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (youTubePlayer == null){
+        if (youTubePlayer == null) {
             return super.onTouchEvent(event);
         }
         switch (event.getAction()) {
@@ -162,13 +175,11 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
                 if (Math.abs(deltaX) > MIN_DISTANCE) {
                     // Left to Right swipe action
                     if (x2 > x1) {
-//                        Toast.makeText(this, "Left to Right swipe [Previous]", Toast.LENGTH_SHORT).show();
                         nextTrailer(false);
                     }
 
                     // Right to left swipe action
                     else {
-//                        Toast.makeText(this, "Right to Left swipe [Next]", Toast.LENGTH_SHORT).show();
                         nextTrailer(true);
                     }
 
@@ -182,12 +193,10 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
 
     private void nextTrailer(boolean next) {
         if (NUM_THREILERS == 0) {
-//            Toast.makeText(this, "No any trailers", Toast.LENGTH_SHORT).show();
             return;
         }
         if (next) {
             if (showVideoId == NUM_THREILERS - 1) {
-//                Toast.makeText(this, "Last one", Toast.LENGTH_SHORT).show();
                 return;
             }
             setLlCountersPrevious(showVideoId);
@@ -195,7 +204,6 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
             youTubePlayer.cueVideo(idMovies.get(showVideoId));
         } else {
             if (showVideoId == 0) {
-//                Toast.makeText(this, "First one", Toast.LENGTH_SHORT).show();
                 return;
             }
             setLlCountersPrevious(showVideoId);

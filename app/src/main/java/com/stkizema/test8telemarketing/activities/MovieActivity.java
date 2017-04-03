@@ -70,16 +70,6 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
             }
         }, 1000);
 
-        View v = youTubeView;
-        v.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                Logger.logd("EDWDWWEWEWE", "onTouch");
-                onTouchEvent(motionEvent);
-                return false;
-            }
-        });
-
         ll_counter = (LinearLayout) findViewById(R.id.ll_round_counters);
 
         tvNoTrailers = (TextView) findViewById(R.id.tv_no_trailers);
@@ -160,16 +150,16 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent ev) {
         if (youTubePlayer == null) {
-            return super.onTouchEvent(event);
+            return super.dispatchTouchEvent(ev);
         }
-        switch (event.getAction()) {
+        switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                x1 = event.getX();
+                x1 = ev.getX();
                 break;
             case MotionEvent.ACTION_UP:
-                x2 = event.getX();
+                x2 = ev.getX();
                 float deltaX = x2 - x1;
 
                 if (Math.abs(deltaX) > MIN_DISTANCE) {
@@ -188,7 +178,7 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
                 }
                 break;
         }
-        return super.onTouchEvent(event);
+        return super.dispatchTouchEvent(ev);
     }
 
     private void nextTrailer(boolean next) {

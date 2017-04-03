@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
 
     private static final int COLUMN_NUMBER = 1;
     private static int REFRESH_VALUE_PAGE = 1;
+    private static final String TAG = "MainActivityTag";
     private int totalPages;
 
     private FetchApi fetchApi;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     private FrameLayout frameTopLayout;
     private SwipyRefreshLayout swipyRefreshLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private boolean mMoreCallOnGoing = false;
 
     private Bundle savedInstanceState;
 
@@ -72,8 +74,34 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         frameTopLayout = (FrameLayout) findViewById(R.id.frame_main);
 
         moviesAdapter = new MoviesAdapter(this, this, null);
+
         rvMain.setHasFixedSize(true);
         rvMain.setAdapter(moviesAdapter);
+        rvMain.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
+                {
+                    LinearLayoutManager mg = (LinearLayoutManager) rvMain.getLayoutManager();
+
+                    int totalCount = mg.getItemCount();
+
+                    int lastVisible = mg.findLastVisibleItemPosition();
+
+                    if (lastVisible < 0) {
+                        return;
+                    }
+
+                    boolean loadMore = (lastVisible == (totalCount - 1));
+
+                    if (loadMore) {
+                        if (!mMoreCallOnGoing) {
+                            uploadBottom();
+                        }
+                    }
+                }
+            }
+        });
 
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, COLUMN_NUMBER, LinearLayoutManager.VERTICAL, false);
         rvMain.setLayoutManager(gridLayoutManager);
@@ -99,13 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
             public void onRefresh(SwipyRefreshLayoutDirection direction) {
                 Logger.logd("BOOLSHITTAG", "onRefresh");
                 if (direction == SwipyRefreshLayoutDirection.BOTTOM) {
-                    if (REFRESH_VALUE_PAGE <= totalPages) {
-                        if (fetchApi != null) {
-                            fetchApi.refresh(++REFRESH_VALUE_PAGE);
-                        }
-                    } else {
-                        swipyRefreshLayout.setRefreshing(false);
-                    }
+                    uploadBottom();
                 } else {
                     if (fetchApi != null) {
                         fetchApi.refresh(1);
@@ -135,6 +157,16 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
         });
     }
 
+    private void uploadBottom() {
+        if (REFRESH_VALUE_PAGE <= totalPages) {
+            if (fetchApi != null) {
+                fetchApi.refresh(++REFRESH_VALUE_PAGE);
+            }
+        } else {
+            swipyRefreshLayout.setRefreshing(false);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -157,8 +189,9 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     @Override
     public void onBeginFetch() {
         //TODO: DISABLE SCREEN
+        mMoreCallOnGoing = true;
         Logger.logd("BOOLSHITTAG", "onBeginFetch");
-        if (swipeRefreshLayout.isEnabled()){
+        if (swipeRefreshLayout.isEnabled()) {
             swipeRefreshLayout.setRefreshing(true);
         }
         swipyRefreshLayout.setRefreshing(true);
@@ -191,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
     }
 
     public void onResponseMovies(List<Movie> list, String msg, int totalPages, int currentPage) {
+        mMoreCallOnGoing = false;
         swipyRefreshLayout.setRefreshing(false);
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);

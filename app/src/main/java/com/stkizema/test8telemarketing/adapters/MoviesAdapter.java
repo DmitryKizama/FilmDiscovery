@@ -34,9 +34,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
     }
 
     public void addList(List<Movie> newlist) {
-        int pos = list.size();
-        list.addAll(pos, newlist);
-        notifyItemRangeInserted(pos, list.size());
+        list.addAll(newlist);
+        notifyItemInserted(newlist.size());
     }
 
     public void setList(List<Movie> list) {
@@ -52,7 +51,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
 
     @Override
     public void onBindViewHolder(ViewHolderMain holder, int position) {
-//        holder.getAdapterPosition();
         final Movie movie = list.get(position);
         Ion.with(con)
                 .load(IMG_PATH + movie.getPosterPath())
@@ -60,7 +58,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
                 .placeholder(R.drawable.defaultimg)
                 .error(R.drawable.defaultimg)
                 .intoImageView(holder.imgMovie);
-//        holder.tvOriginalTitle.setText("Original title: " + list.get(position).getOriginalTitle());
         holder.tvTitle.setText(movie.getTitle());
         holder.tvVotes.setText(movie.getVoteAverage() + NOTHING);
         holder.tvReleaseDate.setText(movie.getReleaseDate());

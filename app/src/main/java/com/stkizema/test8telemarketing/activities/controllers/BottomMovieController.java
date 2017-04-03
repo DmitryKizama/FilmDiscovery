@@ -17,16 +17,16 @@ public class BottomMovieController {
     private Integer movieId;
 
     @BindView(R.id.img_movie)
-    private ImageView imgMovie;
+    protected ImageView imgMovie;
 
     @BindView(R.id.tv_desc_movie)
-    private TextView tvDesc;
+    protected TextView tvDesc;
 
     @BindView(R.id.tv_name)
-    private TextView tvTitle;
+    protected TextView tvTitle;
 
     @BindView(R.id.rv_actors)
-    private RecyclerView rvActors;
+    protected RecyclerView rvActors;
 
     public BottomMovieController(View parent, final Context context, Integer movieId) {
         this.parent = parent;

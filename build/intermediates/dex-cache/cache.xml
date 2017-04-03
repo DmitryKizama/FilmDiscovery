@@ -1,3 +1,248 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
 
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\.gradle\caches\modules-2\files-2.1\org.greenrobot\greendao\3.2.0\e70040568b2929b8e5869ad1ffca8e4386dc53bc\greendao-3.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="e70040568b2929b8e5869ad1ffca8e4386dc53bc">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\greendao-3.2.0_94e4d29a9d45616b7582d71bb680a78cc2d6cb55.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\support-v4\25.1.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-support-v4-25.1.0_5749e522aab70a23b47b2ed214a2ca42fafd4d81.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.koushikdutta.ion\ion\2.1.9\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="7e54ea31584406fcc68225a8656f384c333ff2ee">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.koushikdutta.ion-ion-2.1.9_6cb6f943fa096c449b04560ba68b4635809e5c1e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.jakewharton\butterknife\8.2.1\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="ca5e58104f56f918f0fb3a5b1b371ab599ae56b2">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.jakewharton-butterknife-8.2.1_4d203ebb5e274892470f5a56f686698b73c65c94.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.github.orangegangsters\swipy\1.2.3\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="bb183283871cbff072b40a32e55e205ceac1dbe9">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.github.orangegangsters-swipy-1.2.3_963e9618014a3a1adb19630bf76f9c74bb014ce2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\converter-gson\2.1.0\aa557d71ead91cbf26e0c316a0f593d168303309\converter-gson-2.1.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="aa557d71ead91cbf26e0c316a0f593d168303309">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\converter-gson-2.1.0_6dfc8703744784c63db8d758a5b81f3f4b858021.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\25.0.1\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="1108575c7dc7b7f5b378b3290ac90de81a9b8830">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-cardview-v7-25.0.1_d523f5d14f615ddb150a1976ef637ad2ce51da36.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\retrofit\2.1.0\2de7cd8b95b7021b1d597f049bcb422055119f2c\retrofit-2.1.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="2de7cd8b95b7021b1d597f049bcb422055119f2c">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\retrofit-2.1.0_71b93da052025f67196fb2655f5e7ca4d36b21c1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\25.1.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="1630658fbc2d222b988603c27b4a4249586fbfe7">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-25.1.0_6931c646280543916285dc521a7675525655baeb.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\net.yslibrary.keyboardvisibilityevent\keyboardvisibilityevent\2.0.1\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="2468beeac50c05a3ad7cca19bf77de8dbb39b439">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\net.yslibrary.keyboardvisibilityevent-keyboardvisibilityevent-2.0.1_28cbf56c75a9873de7fe9804c5bcd0603af7f459.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\support-core-ui\25.1.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="aee64634871d88a419d59eb743c1258a60f19700">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-support-core-ui-25.1.0_ff5791a0c47839de6ed698ecd27d492e2cb01ef0.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\support-compat\25.1.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="ca3c7aa31e2726a400a6e552b93cb9f63c9a1e6d">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-support-compat-25.1.0_5c8be90b9b34de47211a59970e840e3cf9f55bc0.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\support-core-utils\25.1.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="0a0ef86b7fa568a52bf6214a0326ca1f1d618da7">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-support-core-utils-25.1.0_c3223e8f78b1ffdfbf46d9e23ed48d85d74f1285.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\support-fragment\25.1.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="2a53c4f3518116b8c6aee0e477233f0f7da8616f">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-support-fragment-25.1.0_9db2efc271a8d4d41b5f9dcfce312271537990f0.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.7\751f548c85fa49f330cecbb1875893f971b33c4e\gson-2.7.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="751f548c85fa49f330cecbb1875893f971b33c4e">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\gson-2.7_e7c825906288ab1f5a0a39cf2459749122cf5db6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\.gradle\caches\modules-2\files-2.1\de.greenrobot\eventbus\2.4.0\ddd166d01b3158d1c00576d29f7ed15c030df719\eventbus-2.4.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="ddd166d01b3158d1c00576d29f7ed15c030df719">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\eventbus-2.4.0_33437f8acdfd874330afc50fdaaecb34d755b36f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\support-media-compat\25.1.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="f02263e35e52668dd17b73bf961437e3d562b35f">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-support-media-compat-25.1.0_d2dff0736c3c4d72a386736a6850b65ed4a65277.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\libs\YouTubeAndroidPlayerApi.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="3c4f96ff493456651cc7bdb0b47e10eb25545a16">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\YouTubeAndroidPlayerApi_86bb8f2fd05aa1bb16373b757b65468d8b0d2d6e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\.gradle\caches\modules-2\files-2.1\org.greenrobot\greendao-api\3.2.0\c6d610abe1d75d758431c9234917a349abc0a0ac\greendao-api-3.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c6d610abe1d75d758431c9234917a349abc0a0ac">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\greendao-api-3.2.0_51c2af2fad9a8db0318fbcbe73997188fd0e9e88.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.8.0\5ea7af56cc7c567ed9856d99efb30740e9b17ff\okio-1.8.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="05ea7af56cc7c567ed9856d99efb30740e9b17ff">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\okio-1.8.0_8f2a3898030ed9e754545062cd658c007d0a66e4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\.gradle\caches\modules-2\files-2.1\com.jakewharton\butterknife-annotations\8.2.1\d6f54d76edfbe779a50a8636b10fd3f555d8f780\butterknife-annotations-8.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="d6f54d76edfbe779a50a8636b10fd3f555d8f780">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\butterknife-annotations-8.2.1_eac2199b90733f8884aa05aa4341853115d357b5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidSdk\extras\android\m2repository\com\android\support\support-annotations\25.1.0\support-annotations-25.1.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="64cb6b229a8bdfd907bc8dd46839a0053e4c018d">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\support-annotations-25.1.0_5f3bdf62745882d810f0bec008d6db77cc7d94c6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.koushikdutta.async\androidasync\2.1.9\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="60d0e28fe7ab6da6c03b54cd8ede502284d51a81">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.koushikdutta.async-androidasync-2.1.9_da3efccdece4c03ba2732399028396d7f4041129.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\25.1.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="e79aa3d9a16f8c9f16377c0608de70a8f31e5d80">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-support-vector-drawable-25.1.0_69941ae1ce651812126ab3d4ba1ee97ea79d8584.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\25.0.1\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="297d4bcf6ed4e747a1bf7d0d094a2d911a8d3a8e">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-recyclerview-v7-25.0.1_27866e8a4a8299673c4d4015c924eacebd403b70.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\25.1.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="6fb6ac3e8d3b9013819920d9ea11f3803c4c0033">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\com.android.support-animated-vector-drawable-25.1.0_9dd56334e30cb1c450224c3fe9dddc2348681e8f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tony\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp3\okhttp\3.3.0\2b802460eea20f8f2ad9c08c74e0f14718e88aa9\okhttp-3.3.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="2b802460eea20f8f2ad9c08c74e0f14718e88aa9">
+        <dex dex="C:\Users\tony\AndroidStudioProjects\Test8Telemarketing\app\build\intermediates\pre-dexed\debug\okhttp-3.3.0_f00e9d5b6e938a62e82209e03cb98326dadad04f.jar" />
+    </item>
+
+</items>

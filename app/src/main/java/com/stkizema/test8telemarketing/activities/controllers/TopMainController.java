@@ -21,7 +21,7 @@ import com.stkizema.test8telemarketing.db.CategoryHelper;
 import com.stkizema.test8telemarketing.db.MovieHelper;
 import com.stkizema.test8telemarketing.db.model.Category;
 import com.stkizema.test8telemarketing.db.model.Movie;
-import com.stkizema.test8telemarketing.services.FetchApi;
+import com.stkizema.test8telemarketing.services.FetchMovieApi;
 import com.stkizema.test8telemarketing.util.Logger;
 
 import java.util.ArrayList;
@@ -39,12 +39,12 @@ public class TopMainController {
     private DropDawnArrayAdapter adapter;
 
     private HintHelper hintHelper;
-    private FetchApi fetchApi;
+    private FetchMovieApi fetchMovieApi;
 
-    public TopMainController(View parent, final Context context, FetchApi fetchApi) {
+    public TopMainController(View parent, final Context context, FetchMovieApi fetchMovieApi) {
         this.parent = parent;
         this.context = context;
-        this.fetchApi = fetchApi;
+        this.fetchMovieApi = fetchMovieApi;
         onCreate();
     }
 
@@ -173,9 +173,9 @@ public class TopMainController {
     private void search(View textView) {
         String text = tvAutocomplete.getText().toString();
         if (searchMovie) {
-            fetchApi.fetchMovieByName(text, 1);
+            fetchMovieApi.fetchMovieByName(text, 1);
         } else {
-            fetchApi.fetchMoviesByCategory(text, 1);
+            fetchMovieApi.fetchMoviesByCategory(text, 1);
         }
         tvAutocomplete.clearFocus();
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);

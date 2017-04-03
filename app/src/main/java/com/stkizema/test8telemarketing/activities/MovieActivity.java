@@ -52,19 +52,19 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
     private BottomMovieController bottomMovieController;
 
     @BindView(R.id.scroll_view_parent_movie)
-    private FrameLayout parentBottom;
+    protected FrameLayout parentBottom;
 
     @BindView(R.id.youtube_view)
-    private YouTubePlayerView youTubeView;
+    protected YouTubePlayerView youTubeView;
 
     @BindView(R.id.ll_round_counters)
-    private LinearLayout ll_counter;
+    protected LinearLayout ll_counter;
 
     @BindView(R.id.tv_no_trailers)
-    private TextView tvNoTrailers;
+    protected TextView tvNoTrailers;
 
     @BindView(R.id.sw_refresh_layout_movie)
-    private SwipeRefreshLayout swipeRefreshLayout;
+    protected SwipeRefreshLayout swipeRefreshLayout;
 
     public static Intent getLaunchingIntent(Context ctx, ArrayList<String> list, Integer movieId) {
         Intent i = new Intent(ctx, MovieActivity.class);
@@ -81,10 +81,8 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
 
         getMovieIntent();
 
-        View view = LayoutInflater.from(this).inflate(R.layout.bottom_movie_controller, parentBottom, false);
-
         parentBottom.removeAllViews();
-        parentBottom.addView(view);
+        parentBottom.addView(LayoutInflater.from(this).inflate(R.layout.bottom_movie_controller, parentBottom, false));
         bottomMovieController = new BottomMovieController(parentBottom, this, movieId);
 
         (new Handler()).postDelayed(new Runnable() {

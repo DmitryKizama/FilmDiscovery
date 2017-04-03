@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements OnResponseListene
             }
         });
 
-        View view = LayoutInflater.from(this).inflate(R.layout.layout_top_controller, frameTopLayout, false);
+        View view = LayoutInflater.from(this).inflate(R.layout.top_main_controller, frameTopLayout, false);
 
         frameTopLayout.removeAllViews();
         frameTopLayout.addView(view);

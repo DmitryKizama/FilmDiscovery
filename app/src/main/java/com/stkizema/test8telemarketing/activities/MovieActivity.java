@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,13 +21,16 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.stkizema.test8telemarketing.R;
+import com.stkizema.test8telemarketing.activities.controllers.BottomMovieController;
 import com.stkizema.test8telemarketing.db.model.Video;
 import com.stkizema.test8telemarketing.util.Config;
-import com.stkizema.test8telemarketing.util.Logger;
 import com.stkizema.test8telemarketing.util.UiHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
@@ -40,14 +45,26 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
     private List<Video> list;
     private ArrayList<String> idMovies = null;
     private Integer movieId = null;
-    private YouTubePlayerView youTubeView;
     private int showVideoId;
     private YouTubePlayer youTubePlayer;
-    private LinearLayout ll_counter;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private TextView tvNoTrailers;
     private Animation scaleGrow;
     private Animation scaleReduce;
+    private BottomMovieController bottomMovieController;
+
+    @BindView(R.id.scroll_view_parent_movie)
+    private FrameLayout parentBottom;
+
+    @BindView(R.id.youtube_view)
+    private YouTubePlayerView youTubeView;
+
+    @BindView(R.id.ll_round_counters)
+    private LinearLayout ll_counter;
+
+    @BindView(R.id.tv_no_trailers)
+    private TextView tvNoTrailers;
+
+    @BindView(R.id.sw_refresh_layout_movie)
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static Intent getLaunchingIntent(Context ctx, ArrayList<String> list, Integer movieId) {
         Intent i = new Intent(ctx, MovieActivity.class);
@@ -60,8 +77,15 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_activity);
+        ButterKnife.bind(this);
 
-        youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
+        getMovieIntent();
+
+        View view = LayoutInflater.from(this).inflate(R.layout.bottom_movie_controller, parentBottom, false);
+
+        parentBottom.removeAllViews();
+        parentBottom.addView(view);
+        bottomMovieController = new BottomMovieController(parentBottom, this, movieId);
 
         (new Handler()).postDelayed(new Runnable() {
             @Override
@@ -70,21 +94,17 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
             }
         }, 1000);
 
-        ll_counter = (LinearLayout) findViewById(R.id.ll_round_counters);
-
-        tvNoTrailers = (TextView) findViewById(R.id.tv_no_trailers);
-
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.sw_refresh_layout_movie);
         swipeRefreshLayout.setEnabled(false);
         swipeRefreshLayout.setRefreshing(true);
 
         scaleGrow = AnimationUtils.loadAnimation(this, R.anim.scale_grow);
         scaleReduce = AnimationUtils.loadAnimation(this, R.anim.scale_reduce);
 
-        youTubeView.setVisibility(View.GONE);
+        setVisibility(false);
         tvNoTrailers.setVisibility(View.GONE);
-        ll_counter.setVisibility(View.GONE);
+    }
 
+    private void getMovieIntent(){
         if (getIntent() != null) {
             idMovies = getIntent().getStringArrayListExtra(INTENT_EXTRA_LIST);
             NUM_THREILERS = idMovies.size();
@@ -96,7 +116,6 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
             }
             addViewsToLlCounters(showVideoId);
         }
-
     }
 
     private void setVisibility(boolean isVideoVisible) {

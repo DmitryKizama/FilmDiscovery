@@ -24,6 +24,7 @@ import com.stkizema.test8telemarketing.R;
 import com.stkizema.test8telemarketing.activities.controllers.BottomMovieController;
 import com.stkizema.test8telemarketing.db.model.Video;
 import com.stkizema.test8telemarketing.util.Config;
+import com.stkizema.test8telemarketing.util.Logger;
 import com.stkizema.test8telemarketing.util.UiHelper;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
@@ -43,7 +45,7 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
     static final int MIN_DISTANCE = 350;
 
     private List<Video> list;
-    private ArrayList<String> idMovies = null;
+    private ArrayList<String> idVideos = null;
     private Integer movieId = null;
     private int showVideoId;
     private YouTubePlayer youTubePlayer;
@@ -102,41 +104,27 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
         tvNoTrailers.setVisibility(View.GONE);
     }
 
-    private void getMovieIntent(){
-        if (getIntent() != null) {
-            idMovies = getIntent().getStringArrayListExtra(INTENT_EXTRA_LIST);
-            NUM_THREILERS = idMovies.size();
-            if (NUM_THREILERS != 0) {
-                showVideoId = 0;
-            }
-            if (getIntent().hasExtra(INTENT_EXTRA_ID_MOVIE)) {
-                movieId = getIntent().getIntExtra(INTENT_EXTRA_ID_MOVIE, 0);
-            }
-            addViewsToLlCounters(showVideoId);
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomMovieController.onResume();
     }
 
-    private void setVisibility(boolean isVideoVisible) {
-        if (isVideoVisible) {
-            ll_counter.setVisibility(View.VISIBLE);
-            youTubeView.setVisibility(View.VISIBLE);
-            tvNoTrailers.setVisibility(View.GONE);
-        } else {
-            ll_counter.setVisibility(View.GONE);
-            youTubeView.setVisibility(View.GONE);
-            tvNoTrailers.setVisibility(View.VISIBLE);
-        }
+    @Override
+    protected void onPause() {
+        bottomMovieController.onPause();
+        super.onPause();
     }
 
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
         swipeRefreshLayout.setRefreshing(false);
         if (!b) {
-            if (idMovies != null) {
-                if (!idMovies.isEmpty()) {
+            if (idVideos != null) {
+                if (!idVideos.isEmpty()) {
                     setVisibility(true);
                     this.youTubePlayer = youTubePlayer;
-                    youTubePlayer.cueVideo(idMovies.get(showVideoId));
+                    youTubePlayer.cueVideo(idVideos.get(showVideoId));
                 } else {
                     setVisibility(false);
                 }
@@ -173,9 +161,14 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
         }
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                x1 = ev.getX();
+                if (youTubeView.getHeight() >= ev.getY()){
+                    x1 = ev.getX();
+                }
                 break;
             case MotionEvent.ACTION_UP:
+                if (youTubeView.getHeight() < ev.getY()){
+                    return super.dispatchTouchEvent(ev);
+                }
                 x2 = ev.getX();
                 float deltaX = x2 - x1;
 
@@ -208,14 +201,14 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
             }
             setLlCountersPrevious(showVideoId);
             showVideoId++;
-            youTubePlayer.cueVideo(idMovies.get(showVideoId));
+            youTubePlayer.cueVideo(idVideos.get(showVideoId));
         } else {
             if (showVideoId == 0) {
                 return;
             }
             setLlCountersPrevious(showVideoId);
             showVideoId--;
-            youTubePlayer.cueVideo(idMovies.get(showVideoId));
+            youTubePlayer.cueVideo(idVideos.get(showVideoId));
         }
         setLlCountersNext(showVideoId);
     }
@@ -247,6 +240,34 @@ public class MovieActivity extends YouTubeBaseActivity implements YouTubePlayer.
         imageView.startAnimation(scaleGrow);
         imageView.setImageResource(R.drawable.ic_point_big_2);
         ll_counter.childDrawableStateChanged(imageView);
+    }
+
+    private void getMovieIntent(){
+        if (getIntent() != null) {
+            idVideos = getIntent().getStringArrayListExtra(INTENT_EXTRA_LIST);
+            NUM_THREILERS = idVideos.size();
+            if (NUM_THREILERS != 0) {
+                showVideoId = 0;
+            }
+            if (getIntent().hasExtra(INTENT_EXTRA_ID_MOVIE)) {
+                movieId = getIntent().getIntExtra(INTENT_EXTRA_ID_MOVIE, 0);
+            }
+            addViewsToLlCounters(showVideoId);
+        }
+    }
+
+    private void setVisibility(boolean isVideoVisible) {
+        if (isVideoVisible) {
+            parentBottom.setVisibility(View.VISIBLE);
+            ll_counter.setVisibility(View.VISIBLE);
+            youTubeView.setVisibility(View.VISIBLE);
+            tvNoTrailers.setVisibility(View.GONE);
+        } else {
+            parentBottom.setVisibility(View.GONE);
+            ll_counter.setVisibility(View.GONE);
+            youTubeView.setVisibility(View.GONE);
+            tvNoTrailers.setVisibility(View.VISIBLE);
+        }
     }
 
     protected YouTubePlayer.Provider getYouTubePlayerProvider() {

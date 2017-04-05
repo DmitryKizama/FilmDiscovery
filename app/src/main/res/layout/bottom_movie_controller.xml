@@ -50,8 +50,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_actors"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+                android:background="@android:color/transparent"
+                android:layout_height="200dp" />
 
         </LinearLayout>
 

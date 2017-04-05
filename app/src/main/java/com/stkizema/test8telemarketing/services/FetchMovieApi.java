@@ -14,12 +14,12 @@ import com.stkizema.test8telemarketing.db.model.Video;
 import com.stkizema.test8telemarketing.events.CategoryEvent;
 import com.stkizema.test8telemarketing.events.MovieEvent;
 import com.stkizema.test8telemarketing.events.VideoByMovieIdEvent;
-import com.stkizema.test8telemarketing.model.CategoryClient;
-import com.stkizema.test8telemarketing.model.CategoryResponse;
-import com.stkizema.test8telemarketing.model.MovieClient;
-import com.stkizema.test8telemarketing.model.MoviesResponse;
-import com.stkizema.test8telemarketing.model.VideoClient;
-import com.stkizema.test8telemarketing.model.VideoResponse;
+import com.stkizema.test8telemarketing.model.category.CategoryClient;
+import com.stkizema.test8telemarketing.model.category.CategoryResponse;
+import com.stkizema.test8telemarketing.model.movie.MovieClient;
+import com.stkizema.test8telemarketing.model.movie.MoviesResponse;
+import com.stkizema.test8telemarketing.model.video.VideoClient;
+import com.stkizema.test8telemarketing.model.video.VideoResponse;
 import com.stkizema.test8telemarketing.util.Config;
 import com.stkizema.test8telemarketing.util.Logger;
 

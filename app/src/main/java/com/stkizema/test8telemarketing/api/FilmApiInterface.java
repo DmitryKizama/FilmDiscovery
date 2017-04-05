@@ -1,8 +1,9 @@
 package com.stkizema.test8telemarketing.api;
 
-import com.stkizema.test8telemarketing.model.CategoryResponse;
-import com.stkizema.test8telemarketing.model.MoviesResponse;
-import com.stkizema.test8telemarketing.model.VideoResponse;
+import com.stkizema.test8telemarketing.model.category.CategoryResponse;
+import com.stkizema.test8telemarketing.model.credit.actors.CreditResponse;
+import com.stkizema.test8telemarketing.model.movie.MoviesResponse;
+import com.stkizema.test8telemarketing.model.video.VideoResponse;
 import com.stkizema.test8telemarketing.util.Config;
 
 import retrofit2.Call;
@@ -28,4 +29,7 @@ public interface FilmApiInterface {
 
     @GET("movie/{id}/videos")
     Call<VideoResponse> getVideoByMovieId(@Path("id") Integer idMovie, @Query("api_key") String api_key, @Query("language") String language);
+
+    @GET("movie/{id}/credits")
+    Call<CreditResponse> getCreditByMovieId(@Path("id") Integer idMovie, @Query("api_key") String api_key);
 }

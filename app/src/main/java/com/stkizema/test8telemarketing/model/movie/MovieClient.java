@@ -1,4 +1,4 @@
-package com.stkizema.test8telemarketing.model;
+package com.stkizema.test8telemarketing.model.movie;
 
 import com.google.gson.annotations.SerializedName;
 import com.stkizema.test8telemarketing.util.Config;

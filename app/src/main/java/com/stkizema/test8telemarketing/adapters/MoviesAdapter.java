@@ -35,7 +35,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolderMain> {
 
     public void addList(List<Movie> newlist) {
         list.addAll(newlist);
-        notifyItemInserted(newlist.size());
+        notifyItemInserted(list.size());
     }
 
     public void setList(List<Movie> list) {

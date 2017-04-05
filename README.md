@@ -19,5 +19,5 @@ or by movie
 And each time you do search by movie it uploads to your local database, and then in offline mode you can search by your uploaded movies.
 It also will have a short description and a trailer in future.
 <p align="center">
-  <img src="https://github.com/DmitryKizama/FilmDiscovery/blob/master/screenshots/4.png" width="350"/>
+  <img src="https://github.com/DmitryKizama/FilmDiscovery/blob/master/screenshots/5.png" width="350"/>
 </p>
